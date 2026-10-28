@@ -287,25 +287,63 @@
 @media(max-width:600px){.academy-card{padding:16px}.academy-main{align-items:start;gap:10px}.academy-main h2{font-size:15px}.academy-main>strong{font-size:24px}.academy-main p{font-size:10px}.academy-lessons{grid-template-columns:1fr}.academy-tiers{gap:5px}.academy-tiers>span{font-size:9px;padding:6px}.academy-tiers b{margin-left:6px}.assembly-name-row{grid-template-columns:1fr;padding:15px}.assembly-canvas{grid-template-columns:1fr 1fr;grid-template-rows:230px auto auto auto auto;gap:10px;padding:10px}.assembly-illustration{inset:0 0 auto;height:240px;align-items:start}.assembly-illustration .rod-visual{height:235px}.part-rod{grid-area:2/1}.part-reel{grid-area:2/2}.part-line{grid-area:3/1}.part-indicator{grid-area:3/2}.part-terminal{grid-area:4/1}.part-hook{grid-area:4/2}.part-bait{grid-area:5/1/6/3}.assembly-part select{font-size:12px;min-height:42px}.assembly-part>span{font-size:8px!important}.assembly-extra{padding:14px 12px;gap:10px}.assembly-safety{grid-template-columns:1fr 1fr}.assembly-actions>.primary{width:100%;margin-left:0}.repair-row{align-items:start;flex-direction:column}.assembly-actions>button{min-height:44px}}
 #app-update-banner{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:200;display:flex;align-items:center;gap:20px;max-width:calc(100% - 30px);padding:16px 20px;background:#243c2c;border:1px solid #c8df9c88;border-radius:9px;box-shadow:0 8px 40px #0006;font-size:12px}#app-update-banner>span{min-width:170px}#app-update-banner>button{white-space:nowrap}.update-settings p{font-size:11px;line-height:1.9;color:var(--muted);margin:0 0 14px}@media(max-width:600px){#app-update-banner{width:calc(100% - 24px);flex-direction:column;gap:12px;align-items:stretch;font-size:11px;bottom:12px}}
 
-/* Individual rod presets selected directly in the session planner. */
-.session-rod-picker{min-width:0;padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid var(--border2)}
+/* Usable rod positions remain a full-width vertical list at every viewport. */
+.session-rod-picker{min-width:0;padding-bottom:22px;margin-bottom:22px;border-bottom:1px solid var(--border2)}
 .session-rod-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .field-step{display:flex;align-items:center;gap:9px;font-size:9px;letter-spacing:1.2px;color:var(--muted)}
 .field-step i{display:grid;place-items:center;width:23px;height:23px;border:1px solid var(--border2);border-radius:50%;font-size:10px;font-style:normal;color:var(--lime)}
 .session-rod-heading>strong{font-size:15px;color:var(--lime);white-space:nowrap}
-.session-rod-picker>p{font-size:11px;color:var(--muted);margin:12px 0}
-.session-rod-positions{padding:0;margin:0;border:0;display:grid;grid-template-columns:1fr;gap:8px;min-width:0}
-.session-rod-position{display:flex;align-items:center;gap:9px;min-width:0;padding:10px;border:1px solid var(--border2);border-radius:7px;background:#101f18}
-.session-rod-position.filled{border-color:#c8df9c40}.session-rod-number{color:var(--lime);font-size:11px;min-width:20px}
-.session-rod-choice{min-width:0;flex:1;display:grid;gap:4px}
-.session-rod-choice>span{font-size:9px;color:var(--muted)}
-.session-rod-choice select{width:100%;max-width:100%;min-width:0;min-height:40px;background:#192d22;border:1px solid var(--border2);border-radius:4px;padding:8px;color:var(--text);font-size:11px;text-overflow:ellipsis}
-.session-rod-position small{display:block;color:var(--muted);font-size:10px}
-.session-rod-position.locked{background:transparent;min-height:58px}.session-rod-position.locked>div{flex:1}.session-rod-position.locked strong{font-size:11px;font-weight:500}.session-rod-position.locked .session-rod-number{color:var(--faint)}
-.session-rod-lock{color:var(--faint);font-size:21px}.session-rod-positions:disabled .session-rod-choice select{opacity:.6}
-.selection-style-counts{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.selection-style-counts>span{display:flex;gap:8px;border:1px solid var(--border2);border-radius:4px;padding:5px 8px;font-size:10px;color:var(--muted)}.selection-style-counts b{font-weight:500;color:var(--text)}
+.session-rod-picker>p{font-size:11px;color:var(--muted);margin:12px 0;line-height:1.7}
+.session-slot-progress{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0 13px;color:var(--muted);font-size:11px}
+.session-slot-progress strong{font-weight:500;color:var(--lime);white-space:nowrap}
+.session-slot-unlock{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:13px;margin:12px 0;border:1px solid #c8df9c30;background:#c8df9c08;border-radius:8px}
+.session-slot-unlock span,.session-slot-unlock strong{display:block}.session-slot-unlock span{font-size:10px;color:var(--muted);margin-bottom:4px}.session-slot-unlock strong{font-size:12px;font-weight:500}.session-slot-unlock .button{min-height:38px}
+.session-rod-positions{display:flex;flex-direction:column;padding:0;margin:0;border:0;gap:12px;min-width:0;width:100%}
+.session-rod-position{display:flex;align-items:flex-start;gap:12px;width:100%;min-width:0;padding:14px;border:1px solid var(--border2);border-radius:9px;background:#102219}
+.session-rod-position.filled{border-color:#c8df9c35}.session-rod-number{display:grid;place-items:center;flex-shrink:0;min-width:28px;height:28px;margin-top:19px;border-radius:50%;border:1px solid #c8df9c30;color:var(--lime);font-size:11px}
+.session-rod-choice{min-width:0;flex:1;display:grid;gap:6px}
+.session-rod-choice>span{font-size:10px;color:var(--muted)}
+.session-rod-choice select{display:block;width:100%;max-width:100%;min-width:0;min-height:46px;background:#192e22;border:1px solid #dce9c42b;border-radius:6px;padding:11px 12px;color:var(--text);font-size:13px;text-overflow:ellipsis}
+.session-rod-position small{display:block;color:var(--muted);font-size:10px;line-height:1.7;overflow-wrap:anywhere}
+.session-rod-positions:disabled .session-rod-choice select{opacity:.65}
+.selection-style-counts{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.selection-style-counts>span{display:flex;gap:8px;border:1px solid var(--border2);border-radius:5px;padding:6px 9px;font-size:10px;color:var(--muted)}.selection-style-counts b{font-weight:500;color:var(--text)}
 .selection-training{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:11px}.selection-training strong{color:var(--lime)}.selection-training.overloaded strong{color:var(--danger)}
-.session-rod-picker>.text-button{display:block;margin-top:13px;color:var(--lime);text-align:left}
-.assembly-method{display:flex;flex-direction:column;justify-content:center;gap:4px}.assembly-method>span{font-size:8px;letter-spacing:1px;color:var(--muted)}.assembly-method strong{font-size:17px;color:var(--lime)}.assembly-method small{font-size:10px;color:var(--muted)}
-@media(min-width:1500px){.session-rod-positions{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.session-rod-choice select{font-size:12px;min-height:44px}.session-rod-position{padding:10px}.assembly-method{padding-top:4px}.selection-style-counts{gap:5px}}
+.session-rod-picker>.text-button{display:block;min-height:40px;margin-top:12px;color:var(--lime);text-align:left;font-size:11px;white-space:normal}
+.assembly-method{display:flex;flex-direction:column;justify-content:center;gap:4px}.assembly-method>span{font-size:9px;letter-spacing:1px;color:var(--muted)}.assembly-method strong{font-size:18px;color:var(--lime)}.assembly-method small{font-size:11px;color:var(--muted)}
+
+/* A bench drawing and a readable tackle close-up above the actual controls. */
+.assembly-workshop{display:flex;flex-direction:column;gap:20px;align-items:stretch}
+.assembly-library-list{flex-direction:row;overflow-x:auto;max-height:none;padding:16px;gap:12px}
+.assembled-card{flex:0 0 245px;min-width:0;padding:15px}.assembly-open strong{font-size:14px;overflow-wrap:anywhere}.assembly-open span,.assembly-open small{font-size:11px}.assembled-card>p{font-size:10px;margin:0}
+.assembly-library>.primary{width:auto;margin:0 16px 14px}.assembly-library>p{font-size:11px;padding:0 16px 17px}
+.assembly-name-row{padding:22px;gap:22px}.assembly-name-row .field>span{font-size:10px}.assembly-name-row input{font-size:14px;min-height:46px}
+.assembly-editor>.panel-head{padding:20px 22px}.assembly-editor>.panel-head h2{font-size:17px}.assembly-editor>.panel-head .eyebrow{font-size:9px}
+.assembly-stage{margin:0 22px 20px;border:1px solid #bfd2ac24;border-radius:12px;overflow:hidden;background:#0e2118}
+.assembly-drawing-grid{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(260px,1fr);align-items:stretch}
+.assembly-drawing-grid>figure{margin:0;min-width:0;background:radial-gradient(ellipse at 50% 65%,#42694a22,transparent 75%)}
+.assembly-drawing-grid figcaption{height:70px;display:flex;flex-wrap:wrap;align-content:center;align-items:center;gap:4px 12px;padding:14px 20px;border-bottom:1px solid #bfd2ac14}
+.assembly-drawing-grid figcaption>span{flex-basis:100%;font-size:9px;letter-spacing:1.4px;color:#829b76}.assembly-drawing-grid figcaption strong{font-size:14px;font-weight:500;color:#d9e4ca}.assembly-drawing-grid figcaption small{margin-left:auto;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:var(--gold)}
+.assembly-rig-figure{border-left:1px solid #bfd2ac22;background-color:#0b1d15!important}
+.assembly-stage .assembly-illustration{position:relative;inset:auto;display:block;height:auto;padding-bottom:28px;pointer-events:auto;min-width:0;overflow:hidden}
+.assembly-rod-drawing .assembly-callout[data-visual-part="reel"],.assembly-rig-drawing .assembly-callout[data-visual-part="bait"]{top:auto;bottom:10px}
+.assembly-stage .assembly-illustration .rod-visual{display:block;width:100%;height:auto;max-height:none;pointer-events:auto}
+.assembly-connectors{fill:none;stroke:#9ab881;stroke-width:1.3;stroke-dasharray:4 5;opacity:.65}.assembly-connectors circle{fill:#d3dfaa;stroke:#183022;stroke-width:2;stroke-dasharray:none}
+.assembly-callout{position:absolute;left:var(--callout-x);top:calc(var(--callout-y) - var(--callout-inset));display:flex;align-items:center;gap:9px;width:34%;min-height:44px;padding:8px 10px;text-align:left;border:1px solid #c4d4af33;border-radius:7px;background:#142a20e8;color:#cad9ba;box-shadow:0 3px 14px #0002}
+.assembly-callout>span{display:grid;place-items:center;width:25px;height:25px;flex-shrink:0;border-radius:50%;border:1px solid #b9cd963d;color:var(--lime);font-size:10px}
+.assembly-callout strong{font-size:10px;font-weight:500;letter-spacing:.5px;overflow-wrap:anywhere}
+.assembly-rig-drawing .assembly-callout{width:43%;gap:7px;padding:7px}.assembly-rig-drawing .assembly-callout strong{font-size:9px}
+.assembly-callout:disabled{opacity:1}.assembly-callout.part-selected{border-color:#cadb9c99;background:#28422d;color:#f0f4d9}
+.assembly-stage .visual-part{cursor:pointer;outline:none}.assembly-stage .visual-part:focus-visible{filter:drop-shadow(0 0 4px #d3e9a2)}.assembly-stage g.part-selected{filter:drop-shadow(0 0 3px #cfe89c66)}
+.assembly-leader-label{position:absolute;top:calc(67.083% - 29px);right:3%;padding:5px 7px;border-radius:4px;font-size:10px;color:#b8caa4;background:#0b1d15cc}
+.assembly-leader-label:disabled{opacity:1}.assembly-drawing-help{margin:0;padding:13px 20px;border-top:1px solid #bfd2ac14;color:#8ea581;font-size:11px;line-height:1.7}
+.assembly-component-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:0 22px 20px}
+.assembly-component-grid .assembly-part{position:relative;grid-area:auto;align-self:stretch;border-radius:8px;padding:14px;background:#13291e;border-color:#bfd2ac24}
+.assembly-component-grid .part-bait{grid-column:1/-1}.assembly-component-grid .assembly-part>span,.assembly-extra .assembly-part>span{font-size:10px!important;letter-spacing:.65px!important;margin-bottom:10px!important}
+.assembly-component-grid .assembly-part i,.assembly-extra .assembly-part i{display:grid;place-items:center;width:22px;height:22px;border:1px solid #c8df9c26;border-radius:50%;font-size:10px;flex-shrink:0}
+.assembly-component-grid .assembly-part select,.assembly-extra .assembly-part select{min-height:46px;font-size:13px;padding:11px 12px;background:#0f2218;border-color:#bfd2ac2b}
+.assembly-component-grid .field-selected{border-color:#c4da936b;box-shadow:0 0 0 1px #c4da932b}
+.assembly-extra{padding:20px 22px;gap:14px;border-top:1px solid #bfd2ac18;background:#14271d}
+.assembly-extra .assembly-part{padding:14px;border-radius:8px;background:#11251b}.assembly-safety{padding:20px 22px}.assembly-safety span{font-size:9px}.assembly-safety strong{font-size:18px}
+.assembly-note,.assembly-warning{font-size:11px;padding-left:22px;padding-right:22px}.assembly-actions{padding:4px 22px 22px}.assembly-actions>button{min-height:44px;font-size:12px}
+@media(max-width:800px){.assembly-drawing-grid{grid-template-columns:minmax(0,1fr)}.assembly-rig-figure{border-left:0;border-top:1px solid #bfd2ac22}.assembly-rig-drawing{max-width:440px;margin:auto}.assembly-rod-drawing{max-width:760px;margin:auto}.assembly-callout{gap:6px;padding:7px}.assembly-callout strong{font-size:10px}.assembly-rig-drawing .assembly-callout strong{font-size:11px}.assembly-drawing-grid figcaption{height:64px}.assembly-component-grid .assembly-part select,.assembly-extra .assembly-part select{font-size:12px}}
+@media(max-width:600px){.session-rod-position{padding:12px;gap:10px}.session-rod-choice select{font-size:13px;min-height:46px}.selection-style-counts{gap:5px}.assembly-name-row{padding:18px;grid-template-columns:1fr;gap:17px}.assembly-editor>.panel-head{padding:18px}.assembly-stage{margin:0 12px 16px}.assembly-component-grid{grid-template-columns:1fr;padding:0 12px 16px;gap:10px}.assembly-component-grid .part-bait{grid-column:auto}.assembly-component-grid .assembly-part{padding:12px}.assembly-extra{grid-template-columns:1fr;padding:16px 12px;gap:10px}.assembly-callout{width:36%;min-height:40px;gap:5px;padding:6px}.assembly-callout>span{width:22px;height:22px;font-size:9px}.assembly-callout strong{font-size:8px;letter-spacing:.3px}.assembly-rig-drawing .assembly-callout strong{font-size:10px}.assembly-library-list{padding:12px}.assembled-card{flex-basis:230px}.assembly-drawing-grid figcaption{padding:13px 15px}.assembly-drawing-help{font-size:10px;padding:12px 15px}.assembly-safety{padding:17px 18px}.assembly-actions{padding:3px 18px 20px}}

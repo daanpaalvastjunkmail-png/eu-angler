@@ -1,4 +1,4 @@
-# Europa Angler — Fishing Idle 3.1.0
+# Europa Angler — Fishing Idle 3.1.1
 
 Een speelbare lokale idle-visgame met Engels als standaard en een direct beschikbare Nederlandse taalkeuze. Je bouwt van één hengel naar een visbedrijf met meerdere lijnen, eigen viswater en een vloot. De vormgeving, content en spelregels zijn oorspronkelijk; Melvor Idle was alleen een genre-inspiratie.
 
@@ -23,6 +23,12 @@ Koppel de bestaande Worker `europa-angler` via Settings > Builds > Connect aan d
 Cloudflare installeert de npm-afhankelijkheden. De build voert syntaxcontroles, alle spelsuites en de daadwerkelijke standalone- en webreleasecontroles uit. Een fout stopt het proces voor publicatie. De Wrangler-configuratie bovenaan wijst naar `build/web/` en houdt de bestaande Worker-naam aan. De afzonderlijke configuratie in `workers/` is voor het handmatige updatepakket, niet voor de rootdirectory van deze Git-koppeling.
 
 Een push naar de gekozen productiebranch triggert de volgende build en publicatie. De eerste geslaagde deployment moet in Cloudflare worden gecontroleerd; alleen toegang aan GitHub geven of deze bestanden lokaal voorbereiden activeert de verbinding nog niet. Speel op het bestaande speladres met hetzelfde browserprofiel om dezelfde save te blijven gebruiken. Er is geen synchronisatie tussen apparaten.
+
+## Indeling — 3.1.1
+
+De sessieplanner toont alleen gekochte hengelplaatsen die je op je huidige level mag gebruiken, altijd in één kolom. Boven de lijst staat het volgende vrijspeellevel. Zodra een extra plaats op jouw level beschikbaar is, verschijnt daar de aankoopknop; toekomstige lege slottegels worden niet getoond.
+
+De hengelwerkplaats toont een vrijstaande hengeltekening en een aparte vergrote montage. Lood of voerkorf, wartel, onderlijn, haak en aas zijn zichtbaar. Genummerde aanwijslijnen koppelen onderdelen aan hun keuzeblok onder de tekening; aanklikken of bedienen met het toetsenbord brengt de bijbehorende keuze in beeld. Op kleinere schermen staan de tekeningen en keuzeblokken onder elkaar.
 
 ## Hengelpresets en sessiekeuze — 3.1.0
 

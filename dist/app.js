@@ -196,7 +196,7 @@ function handleAction(action){
 }
 document.addEventListener('click',event=>{
  const sceneRod=event.target.closest('[data-scene-line]');if(sceneRod){const index=Number(sceneRod.dataset.sceneLine);if(['nibble','bite','rescue'].includes(game.state.session?.rods[index]?.phase))strikeRod(index);return;}
- const part=event.target.closest('[data-visual-part]');if(part){const field=$('[data-assembly-field="'+part.dataset.visualPart+'"]');if(field){field.focus({preventScroll:true});field.closest('label').classList.add('field-selected');}else focusVisualPart(Number(part.dataset.visualIndex),part.dataset.visualPart);return;}
+ const part=event.target.closest('[data-visual-part]');if(part){focusVisualPart(Number(part.dataset.visualIndex),part.dataset.visualPart);return;}
  const b=event.target.closest('button,a');if(!b||b.disabled)return;
  if(b.dataset.editAssembly){assemblyDraft=assemblyDraftFrom(game.state.rodPresets.find(p=>p.id===b.dataset.editAssembly));render();return;}
  if(b.dataset.dismantleAssembly){const id=b.dataset.dismantleAssembly;ask('Hengel uit elkaar halen?','<p>De onderdelen worden vrijgegeven. Deze hengel verdwijnt uit je sessiekeuze.</p>','Uit elkaar halen',()=>{if(act(game.deleteRodPreset(id))){assemblyDraft=assemblyDraftFrom(game.state.rodPresets[0])||newAssemblyDraft();render();}});return;}
@@ -231,7 +231,7 @@ document.addEventListener('click',event=>{
 document.addEventListener('change',event=>{
  const e=event.target,id=e.id;
  if(e.dataset.sessionRodSlot!==undefined){const slot=Number(e.dataset.sessionRodSlot);if(!act(game.chooseSessionRod(slot,e.value)))render();$('[data-session-rod-slot="'+slot+'"]')?.focus({preventScroll:true});return;}
- if(e.dataset.assemblyField){const field=e.dataset.assemblyField;if(field==='rod'){assemblyDraft=draftWithRod(game,assemblyDraft,e.value);render();$('[data-assembly-field="rod"]')?.focus({preventScroll:true});return;}if(PARTS.includes(field)){assemblyDraft.items[field]=e.value||null;const item=game.state.tackleItems.find(i=>i.id===e.value);if(item)assemblyDraft.rod[field]=item.gearId;else if(field==='indicator')assemblyDraft.rod[field]=null;}else{assemblyDraft.rod[field]=e.value||null;if(field==='combo'){const combo=COMBOS.find(c=>c.id===e.value);if(combo?.requires&&!combo.requires.includes(assemblyDraft.rod.bait))assemblyDraft.rod.bait=combo.requires[0];}}render();return;}
+ if(e.dataset.assemblyField){const field=e.dataset.assemblyField;if(field==='rod'){assemblyDraft=draftWithRod(game,assemblyDraft,e.value);render();focusAssemblyPart('rod',false);return;}if(PARTS.includes(field)){assemblyDraft.items[field]=e.value||null;const item=game.state.tackleItems.find(i=>i.id===e.value);if(item)assemblyDraft.rod[field]=item.gearId;else if(field==='indicator')assemblyDraft.rod[field]=null;}else{assemblyDraft.rod[field]=e.value||null;if(field==='combo'){const combo=COMBOS.find(c=>c.id===e.value);if(combo?.requires&&!combo.requires.includes(assemblyDraft.rod.bait))assemblyDraft.rod.bait=combo.requires[0];}}render();focusAssemblyPart(field,false);return;}
  if(e.matches('[data-language-select]')){act(game.setLanguage(e.value));return;}
  if(e.hasAttribute('data-catch-sort')||e.hasAttribute('data-catch-sort-direction')){if(e.hasAttribute('data-catch-sort'))catchSort=e.value;else catchDirection=e.value;if(page==='home'){homeCatchSignature=null;refreshHomeCatches();translateGameUI($('#session-catches'));$(e.hasAttribute('data-catch-sort')?'[data-catch-sort]':'[data-catch-sort-direction]')?.focus({preventScroll:true});}else render();return;}
  if(id==='journal-select'){journalSelection=e.value;catchLimit=50;render();return;}
@@ -283,7 +283,15 @@ function renderForecastContent(){
  return forecastPanel(game,{loadout:l,water:w,source:forecastSource,rod:forecastRodSelection});
 }
 function refreshForecast(){const root=$('#forecast-root');if(root){root.innerHTML=renderForecastContent();translateGameUI(root);}}
-function focusVisualPart(index,part){if(page==='loadouts'&&$('[data-assembly-field="'+part+'"]')){const el=$('[data-assembly-field="'+part+'"]');el.focus({preventScroll:true});el.closest('label').classList.add('field-selected');return;}const input=$(`[data-rod-index="${index}"][data-rod-field="${part}"]`);if(!input)return;$$('.field-selected').forEach(el=>el.classList.remove('field-selected'));input.closest('.field')?.classList.add('field-selected');input.focus({preventScroll:true});input.scrollIntoView?.({behavior:'smooth',block:'nearest'});}
+function focusAssemblyPart(part,scroll=true){
+ const field=$('[data-assembly-field="'+part+'"]');if(!field)return;
+ $$('.assembly-part.field-selected').forEach(el=>el.classList.remove('field-selected'));
+ $$('[data-visual-part]').forEach(el=>el.classList.toggle('part-selected',el.dataset.visualPart===part));
+ field.closest('label').classList.add('field-selected');field.focus({preventScroll:true});
+ if(scroll)field.scrollIntoView?.({behavior:game.state.settings.reducedMotion?'instant':'smooth',block:'center'});
+}
+function focusVisualPart(index,part){if(page==='loadouts'){focusAssemblyPart(part);return;}const input=$(`[data-rod-index="${index}"][data-rod-field="${part}"]`);if(!input)return;$$('.field-selected').forEach(el=>el.classList.remove('field-selected'));input.closest('.field')?.classList.add('field-selected');input.focus({preventScroll:true});input.scrollIntoView?.({behavior:'smooth',block:'nearest'});}
+
 function strikeRod(index){const result=game.strike(index);if(act(result)){triggerHookSet($('#scene-foreground'),index,Date.now(),game.state.settings.reducedMotion);paintAnglingVisuals();}return result;}
 async function toggleBiteAudio(){if(biteAudio.enabled&&game.state.settings.audio){biteAudio.mute();act(game.setSetting('audio',false));toast('Beetgeluiden uit.');}else if(await biteAudio.unlock()){act(game.setSetting('audio',true));toast('Beetgeluiden aan. De uitgeruste beetmelders bepalen wat je hoort.');}else toast('Deze browser kan het geluid nu niet starten.','error');updateAnglingDeck();}
 async function previewSignal(id){const i=INDICATORS.find(i=>i.id===id);if(!i)return;if(i.style==='dobber'){toast('Een neon- of glow-antenne is een zichtbare beetmelder.');return;}if(!biteAudio.enabled&&!await biteAudio.unlock()){toast('Deze browser kan het voorbeeldgeluid niet starten.','error');return;}biteAudio.play(i.style,i.id);if(!game.state.settings.audio)biteAudio.mute();toast('Voorbeeld: '+i.name+'.');}

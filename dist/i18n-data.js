@@ -1414,4 +1414,33 @@ Kies bij stap 01 je losse hengels: maximaal zes in totaal, met maximaal twee dob
 Combineer drie van je hengelpresets.|Combine three of your rod presets.
 sessiekeuze|session selection
 `.trim().split('\n').map(line=>line.split('|'));
-export const ENGLISH = Object.fromEntries([...entries,...fragments,...equipmentEntries,...rodSelectionEntries]);
+const workshopLayoutEntries=`
+Volgende hengelplaats|Next rod slot
+Extra hengelplaats beschikbaar|Extra rod slot available
+Alle zes hengelplaatsen zijn vrijgespeeld.|All six rod slots are unlocked.
+Hengelplaats kopen|Buy rod slot
+Je hengel|Your rod
+Voerkorf & onderlijn|Feeder cage & hooklink
+Dobber, lood & onderlijn|Float, weights & hooklink
+Lood & hair-rig|Weight & hair rig
+Lood & zeemontage|Weight & sea rig
+Uitvergroot|Close-up
+Lood|Weight
+Voerkorf|Feeder cage
+Onderlijn|Hooklink
+LOOD / MONTAGE|WEIGHT / RIG
+VOERKORF / MONTAGE|FEEDER CAGE / RIG
+DOBBER / LOOD|FLOAT / WEIGHTS
+BEETMELDING|BITE SIGNAL
+Hengel met molen en hoofdlijn|Rod with reel and main line
+Vergrote montage met lood, onderlijn, haak en aas|Enlarged rig with weight, hooklink, hook and bait
+Klik op een genummerd onderdeel om de bijbehorende keuze te openen.|Select a numbered component to open its matching control.
+Hengel aanpassen|Edit rod
+Molen aanpassen|Edit reel
+Hoofdlijn aanpassen|Edit main line
+Beetmelder aanpassen|Edit bite indicator
+Lood / montage aanpassen|Edit weight / rig
+Haak aanpassen|Edit hook
+Aas aanpassen|Edit bait
+`.trim().split('\n').map(line=>line.split('|'));
+export const ENGLISH = Object.fromEntries([...entries,...fragments,...equipmentEntries,...rodSelectionEntries,...workshopLayoutEntries]);
