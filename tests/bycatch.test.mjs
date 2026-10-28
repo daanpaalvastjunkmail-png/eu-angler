@@ -8,7 +8,7 @@ function setup(seed=42,rod={}){
  let now=1800000000000;const data=new Map(),storage={getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};
  const g=new IdleGame({storage,now:()=>now});g.state.seed=seed;g.state.xp=xpAt(200);g.state.money=1e7;
  g.state.gear=Object.fromEntries(GEAR.map(i=>[i.id,6]));g.state.upgrades.net=6;
- assert(g.saveLoadout(null,'Bycatch test',assembleRods(g,[{...starterRod('karper'),rod:'karper_rod_heritage',line:'line_heritage',...rod}])).ok);assert(g.selectWater('poldermeer').ok);
+ assert(g.setSessionRods(assembleRods(g,[{...starterRod('karper'),rod:'karper_rod_heritage',line:'line_heritage',...rod}])).ok);assert(g.selectWater('poldermeer').ok);
  g.setPlan({duration:8*3600,reserve:.1});
  return {g,storage,now:()=>now,step:s=>{now+=s*1000;g.advanceTo(now);}};
 }

@@ -35,7 +35,7 @@ const range=$('#plan-duration'),before=game.state.money;range.value=String(sessi
 assert.equal(game.state.plan.duration,3600);assert.equal(game.state.plan.license,3600);assert.equal(game.state.money,before);assert.equal($('#session-duration-label').textContent,'1 hour');
 checks.push('The long explanatory slider copy is absent; moving the slider still updates session, licence and price without charging money');
 game.state.xp=xpAt(200);game.state.money=1e6;game.state.estate.owned=true;game.state.upgrades.net=3;game.state.seed=9876543;
-assert(game.selectLoadout('karper').ok);assert(game.selectWater('poldermeer').ok);
+assert(game.chooseSessionRod(0,'rig_'+'karper').ok);assert(game.selectWater('poldermeer').ok);
 page('statistics');
 const share=game.forecast().bycatchHour/game.forecast().auto.catches*100;
 assert(Math.abs(Number($('[data-bycatch-share]').textContent.replace('%','').replace(',','.'))-share)<.06);

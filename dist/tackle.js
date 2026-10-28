@@ -1,7 +1,7 @@
 import {GEAR} from './data.js';
 import {rodSnapshot,ROD_FIELDS} from './rig-presets.js';
 export const PARTS=['rod','reel','line','hook','terminal','indicator'];
-export const SCHEMA_VERSION=3;
+export const SCHEMA_VERSION=4;
 const gear=Object.fromEntries(GEAR.map(i=>[i.id,i])),clone=x=>JSON.parse(JSON.stringify(x));
 export const sameSetup=(a,b)=>!!a&&!!b&&ROD_FIELDS.every(k=>(a[k]??null)===(b[k]??null));
 export const ownerOf=(state,itemId,except=null)=>state.rodPresets.find(p=>p.id!==except&&p.assembled&&Object.values(p.items||{}).includes(itemId));
@@ -22,10 +22,10 @@ export function assemblyError(state,preset){
  for(const part of PARTS){if(!preset.rod[part])continue;const item=state.tackleItems.find(i=>i.id===preset.items?.[part]);if(!item||item.gearId!==preset.rod[part]||ownerOf(state,item.id,preset.id))return 'Een onderdeel ontbreekt of is al bezet.';if(item.condition<=0)return 'Deze hengel is gebroken. Repareer hem of vervang de hengel.';}
  return null;
 }
-export function refreshLoadoutReferences(state){for(const l of state.loadouts){l.rods=l.rods.flatMap(r=>{const p=state.rodPresets.find(p=>p.id===r.sourcePresetId);return p?[{...clone(p.rod),sourcePresetId:p.id,slot:r.slot}]:[];});}}
-export function migrateTackle(state,raw){
+export function refreshSelectionReferences(state){state.selectedRods=state.selectedRods.flatMap(r=>{const p=state.rodPresets.find(p=>p.id===r.sourcePresetId);return p?[{...clone(p.rod),sourcePresetId:p.id,slot:r.slot}]:[];});}
+export function migrateTackle(state,raw,legacyLoadouts=[]){
  if(Number(raw.schemaVersion)>SCHEMA_VERSION)throw Error('NEWER_SAVE');
- if(raw.schemaVersion===SCHEMA_VERSION){
+ if(Number(raw.schemaVersion)>=3){
   if(!Array.isArray(raw.tackleItems))throw Error('Missing tackle inventory');
   const ids=new Set();state.tackleItems=raw.tackleItems.map(i=>{if(!i||typeof i.id!=='string'||!i.id||i.id.length>80||!gear[i.gearId]||ids.has(i.id)||!Number.isFinite(i.condition)||i.condition<0||i.condition>100)throw Error('Invalid tackle item');ids.add(i.id);return {id:i.id.slice(0,80),gearId:i.gearId,condition:i.condition,starter:i.starter===true};});
   state.gear=Object.fromEntries(GEAR.map(g=>[g.id,state.tackleItems.filter(i=>i.gearId===g.id).length]));
@@ -34,7 +34,7 @@ export function migrateTackle(state,raw){
  }else{
   state.tackleItems=[];const counts={...state.gear};state.gear={};for(const g of GEAR)if(counts[g.id])addTackle(state,g.id,counts[g.id],g.category==='rod'&&g.starter);
   // Preserve existing names/designs and link identical setups across alternate loadouts.
-  const order=[state.session?.loadout,state.loadouts.find(l=>l.id===state.activeLoadout),...state.loadouts].filter(Boolean);
+  const order=[state.session?.loadout,{name:'Gekozen hengels',rods:state.selectedRods},...legacyLoadouts].filter(Boolean);
   const priority=[];for(const l of order){const used=new Set();for(const [i,r]of l.rods.entries()){
    let p=state.rodPresets.find(p=>p.id===r.sourcePresetId&&sameSetup(p.rod,r)&&!used.has(p.id))||state.rodPresets.find(p=>sameSetup(p.rod,r)&&!used.has(p.id));
    if(!p){p={id:'rig_'+state.serial++,name:`${l.name} · ${i+1}`,rod:rodSnapshot(r)};state.rodPresets.push(p);}r.sourcePresetId=p.id;used.add(p.id);if(!priority.includes(p))priority.push(p);
@@ -50,6 +50,6 @@ export function migrateTackle(state,raw){
   }
   state.migrationNote='Je oude materiaal en loadouts zijn omgezet naar individuele hengels. Gedeelde lijn- en haaksets zijn eenmalig verdeeld; ontwerpen zonder vrije hengel of molen blijven bewaard om later te bouwen.';
  }
- state.schemaVersion=SCHEMA_VERSION;refreshLoadoutReferences(state);return state;
+ state.schemaVersion=SCHEMA_VERSION;refreshSelectionReferences(state);return state;
 }
 export function repairQuote(state,itemId){const item=state.tackleItems.find(i=>i.id===itemId),g=gear[item?.gearId];if(!item||g.category!=='rod')return null;return {item,gear:g,missing:100-item.condition,cost:item.starter?0:Math.round(Math.max(.5,g.price*.35*(100-item.condition)/100)*100)/100};}

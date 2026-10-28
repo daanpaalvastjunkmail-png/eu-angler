@@ -9,16 +9,16 @@ for(const style of ['feeder','karper','dobber']){
   let now=1800000000000;
   const data=new Map(),storage={getItem:key=>data.get(key)||null,setItem:(key,value)=>data.set(key,value)};
   let game=new IdleGame({storage,now:()=>now});game.state.seed=(seed*2654435761)>>>0;
-  assert(game.selectLoadout(style).ok);let sessions=0;
+  assert(game.chooseSessionRod(0,'rig_'+style).ok);let sessions=0;
   const context=()=>`${style}, seed ${seed}, after ${sessions} sessions`;
   const reload=()=>{
    const before=JSON.parse(game.exportSave()).save;
    game=new IdleGame({storage,now:()=>now});
-   for(const key of ['money','xp','seed','serial','activeLoadout','lastAt'])assert.equal(game.state[key],before[key],`${context()}: reload changed ${key}`);
+   for(const key of ['money','xp','seed','serial','lastAt'])assert.equal(game.state[key],before[key],`${context()}: reload changed ${key}`);
    assert.deepEqual(game.state.stats,before.stats,`${context()}: reload changed statistics`);
    assert.deepEqual(game.state.records,before.records,`${context()}: reload changed records`);
    assert.deepEqual(game.state.permits,before.permits,`${context()}: reload changed paid permits`);
-   assert.deepEqual(game.loadout.rods,before.loadouts.find(loadout=>loadout.id===before.activeLoadout).rods,`${context()}: reload changed equipped rods`);
+   assert.deepEqual(game.loadout.rods,before.selectedRods,`${context()}: reload changed equipped rods`);
    for(const [id,quantity] of Object.entries(before.stock))assert.equal(game.state.stock[id],quantity,`${context()}: reload changed stock ${id}`);
    assert.equal(game.state.net.length,0);assert.equal(game.state.session,null);assert.deepEqual(game.state.catchChoices,{});
   };
@@ -44,13 +44,13 @@ for(const style of ['feeder','karper','dobber']){
   assert(game.level>=10,`${context()}: first extra rod did not unlock within 25 hours`);
   const firstLevelTenMinutes=sessions*15;
   assert.equal(game.state.rodSlots,1);assert(game.buySlot().ok,`${context()}: cannot afford the second slot`);
-  assert(game.saveLoadout(null,'First feeder and carp pair',[
+  assert(game.setSessionRods([
    {...starterRod('feeder'),slot:0},{...starterRod('karper'),slot:1},
   ]).ok);
-  const caughtBefore=game.state.stats.caught,mixedId=game.loadout.id;
+  const caughtBefore=game.state.stats.caught;
   completeSession();
   assert(game.state.stats.caught>caughtBefore,`${context()}: the mixed outing produced no fish`);
-  assert.equal(game.state.rodSlots,2);assert.equal(game.loadout.id,mixedId);
+  assert.equal(game.state.rodSlots,2);
   assert.deepEqual(game.loadout.rods.map(rod=>[rod.slot,rod.style]),[[0,'feeder'],[1,'karper']]);
   outcomes.push({style,seed,minutes:firstLevelTenMinutes,money:game.state.money});
  }

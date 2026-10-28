@@ -83,7 +83,7 @@ assert.equal(displayedSpecies.size,SPECIES.length);
 checks.push('Every water lists all its local species and real material limits; all 20 fish species and crayfish are covered, and read-only rod filtering spends nothing or alters any save data');
 
 game.state.xp=xpAt(10);game.state.legacy.count=0;game.state.rodSlots=2;
-assert(game.saveLoadout(null,'Canal pair',[{...starterRod('feeder'),slot:0},{...starterRod('karper'),slot:1}]).ok);
+assert(game.setSessionRods([{...starterRod('feeder'),slot:0},{...starterRod('karper'),slot:1}]).ok);
 assert(game.selectWater('poldermeer').ok);page('statistics');
 assert.equal($('#forecast-rod').options.length,3);
 const beforeFilters=snapshot(),allMarkup=$('#forecast-root').innerHTML;
@@ -99,18 +99,18 @@ checks.push('Mixed feeder/carp forecasts can show both rods or either single rod
 
 page('home');game.setPlan({duration:300,reserve:.1});click('#start-session');
 assert(game.state.session);const activeLoadout=structuredClone(game.state.session.loadout);
-change('#plan-loadout','dobber');change('#plan-water','rietplas');
+const beforeRodChange=structuredClone(game.state.selectedRods);assert(!game.chooseSessionRod(0,'rig_dobber').ok);assert.deepEqual(game.state.selectedRods,beforeRodChange);change('#plan-water','rietplas');
 const sessionBeforeNavigation=snapshot();page('statistics');
 assert.equal($('#forecast-source').value,'session');
 assertForecast(activeLoadout,waterById('poldermeer'));
 assert.equal(snapshot(),sessionBeforeNavigation,'Opening Statistics must preserve the running session and planned next setup');
 change('#forecast-rod','1');assertForecast({...activeLoadout,rods:[activeLoadout.rods[1]]},waterById('poldermeer'));
 change('#forecast-source','plan');assert.equal($('#forecast-rod').value,'all');
-assert.equal($('#forecast-rod').options.length,2);assertForecast(game.loadout,waterById('rietplas'));
+assert.equal($('#forecast-rod').options.length,3);assertForecast(game.loadout,waterById('rietplas'));
 change('#forecast-source','session');assert.equal($('#forecast-rod').value,'all');
 assert.equal($('#forecast-rod').options.length,3);assertForecast(activeLoadout,waterById('poldermeer'));
 assert.equal(snapshot(),sessionBeforeNavigation,'Source changes must not restart the active session, swap gear or charge another permit');
-checks.push('Statistics stays accessible during fishing and separates the immutable current feeder/carp session from a newly planned float loadout and water; source changes reset only the view filter');
+checks.push('Statistics stays accessible during fishing and separates the immutable current feeder/carp session from a planned rods and a different next water; source changes reset only the view filter');
 
 const runtime=game.state.session.rods[0];
 Object.assign(runtime,{phase:'bite',candidate:{id:'fish_'+game.state.serial++,species:'brasem',name:'Brasem',weight:.7,value:7,xp:10,water:'poldermeer',trophy:false,eligible:true,autoRoll:.99,manualRoll:0},biteStartedAt:clock-500,deadline:clock+5000,next:3.2});

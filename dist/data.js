@@ -1,8 +1,8 @@
 export const VERSION=2;
 export const STYLES=[
-{id:'feeder',name:'Feeder',label:'Bodem & voerkorf',color:'#c6d592',feed:12,bait:1.2,interval:18,cap:2},
-{id:'karper',name:'Karper',label:'Boilies & geduld',color:'#dbb97a',feed:8,bait:.65,interval:30,cap:3},
-{id:'dobber',name:'Dobber',label:'Licht & precies',color:'#8cc9b3',feed:3,bait:1.8,interval:12,cap:1},
+{id:'feeder',name:'Feeder',label:'Bodem & voerkorf',color:'#c6d592',feed:12,bait:1.2,interval:18,cap:4},
+{id:'karper',name:'Karper',label:'Boilies & geduld',color:'#dbb97a',feed:8,bait:.65,interval:30,cap:4},
+{id:'dobber',name:'Dobber',label:'Licht & precies',color:'#8cc9b3',feed:3,bait:1.8,interval:12,cap:2},
 {id:'zee',name:'Zee',label:'Diep water & grote vis',color:'#8bb8d7',feed:4,bait:.8,interval:40,cap:3,level:120},
 ];
 export const SLOT_LEVELS=[1,10,40,90,170,300];
@@ -97,7 +97,7 @@ export const WATERS=[
 {id:'donau',name:'Donau Delta',country:'Roemenië',region:'Een labyrint van stil water',level:85,rate:5000,factor:1,xp:12,color:'#83967b',fish:['schub','spiegel','meerval','steur','snoek','voorn','brasem','rivierkreeft'],crayfishPressure:0.75,tag:'TROFEEWATER',description:'Hier wordt je materiaal getest door de grootste zoetwatervissen.'},
 {id:'noordzee',name:'De Noordzee',country:'Nederland',region:'Zout op je gezicht',level:120,rate:18000,factor:.5,xp:2,color:'#6e939d',sea:true,fish:['zeebaars','kabeljauw','heilbot'],tag:'ZEEVISSEN',description:'Gebruik zeehengels. Een eigen boot of ingehuurde charter is nodig.'},
 {id:'lofoten',name:'Lofoten',country:'Noorwegen',region:'Koud water. Grote verwachtingen.',level:170,rate:65000,factor:.8,xp:4,color:'#7b9eae',sea:true,fish:['kabeljauw','heilbot','tonijn'],tag:'DIEPZEE',description:'Diepe fjorden en zware heilbot. Een sterke voorslag is onmisbaar.'},
-{id:'azoren',name:'De Azoren',country:'Portugal',region:'De blauwe horizon',level:220,rate:190000,factor:1,xp:6,color:'#557e9b',sea:true,fish:['tonijn','blauwvintonijn','zwaardvis'],tag:'BIG GAME',description:'Je vloot en beste loadout krijgen toegang tot de Atlantische rijkdom.'},
+{id:'azoren',name:'De Azoren',country:'Portugal',region:'De blauwe horizon',level:220,rate:190000,factor:1,xp:6,color:'#557e9b',sea:true,fish:['tonijn','blauwvintonijn','zwaardvis'],tag:'BIG GAME',description:'Je vloot en beste hengels krijgen toegang tot de Atlantische rijkdom.'},
 {id:'pelagic',name:'Pelagic Reserve',country:'Atlantische Oceaan',region:'Voor de beste vissers van Europa',level:260,prestige:1,rate:450000,factor:1,xp:10,color:'#567b91',sea:true,fish:['blauwvintonijn','zwaardvis'],tag:'LEGENDEWATER',description:'Een prestigebestemming voor een nieuwe generatie vislegendes.'},
 ];
 export const RECIPES=[
@@ -133,6 +133,6 @@ export const BOATS=[
 {id:'pelagic',name:'Pelagic Horizon',level:240,prestige:1,price:1850000,income:6200,trip:8*3600,fuel:22000,fishValue:95000,xp:6000000,description:'Een investering voor een internationale visonderneming.'},
 ];
 export const MILESTONES=[
-[1,'Het eerste verhaal','Een hengel, drie visstijlen en de Rietplas.'],[5,'De werkbank','Maak onderlijnen, verdien vakmanschap en verkoop rigs.'],[8,'De ochtendbeker','Doe mee aan wedstrijden tegen computervissers.'],[10,'Twee lijnen in het water','Koop je tweede hengelplaats.'],[15,'Meer dan een hobby','Nieuwe wateren en automatisch verkopen.'],[25,'De perfecte cocktail','Combineer aas en bouw een grotere werkbank.'],[40,'Drie hengels','Een complete meervoudige loadout.'],[80,'Een eigen stukje water','Koop je viswater, zet vis uit en ontvang bezoekers.'],[90,'Vier hengels','Meer lijnen, grotere ambities.'],[100,'Een nieuw seizoen','Prestige: begin opnieuw met blijvende kennis.'],[120,'Voorbij de kust','Ontdek zeevissen en huur een charter.'],[150,'Jouw eerste schip','Koop boten, verhuur ze of stuur ze op visreis.'],[170,'Vijf hengels','Een uitrusting voor de gevorderde ondernemer.'],[220,'Atlantische rijkdom','Tonijn, zwaardvis en grote investeringen.'],[300,'Zes hengels. Eén imperium.','De moeilijkste hengelplaats en de titel Oeverlegende.'],
+[1,'Het eerste verhaal','Een hengel, drie visstijlen en de Rietplas.'],[5,'De werkbank','Maak onderlijnen, verdien vakmanschap en verkoop rigs.'],[8,'De ochtendbeker','Doe mee aan wedstrijden tegen computervissers.'],[10,'Twee lijnen in het water','Koop je tweede hengelplaats.'],[15,'Meer dan een hobby','Nieuwe wateren en automatisch verkopen.'],[25,'De perfecte cocktail','Combineer aas en bouw een grotere werkbank.'],[40,'Drie hengels','Combineer drie van je hengelpresets.'],[80,'Een eigen stukje water','Koop je viswater, zet vis uit en ontvang bezoekers.'],[90,'Vier hengels','Meer lijnen, grotere ambities.'],[100,'Een nieuw seizoen','Prestige: begin opnieuw met blijvende kennis.'],[120,'Voorbij de kust','Ontdek zeevissen en huur een charter.'],[150,'Jouw eerste schip','Koop boten, verhuur ze of stuur ze op visreis.'],[170,'Vijf hengels','Een uitrusting voor de gevorderde ondernemer.'],[220,'Atlantische rijkdom','Tonijn, zwaardvis en grote investeringen.'],[300,'Zes hengels. Eén imperium.','De moeilijkste hengelplaats en de titel Oeverlegende.'],
 ];
 export const BY_ID=Object.fromEntries([...GEAR,...SUPPLIES,...SPECIES,...WATERS,...RECIPES,...BOATS].map(x=>[x.id,x]));

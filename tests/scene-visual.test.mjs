@@ -73,7 +73,7 @@ const tipEnd=line=>line.querySelector('.fishing-large-tip').getAttribute('d').ma
   }
  }
  assert.equal(JSON.stringify(session),before,'Painting rods must not advance or mutate the fishing simulation');
- const game=new IdleGame({storage:null,now:()=>1800000000000});game.loadout.rods=rods.map((rod,slot)=>({...rod,slot}));
+ const game=new IdleGame({storage:null,now:()=>1800000000000});game.state.selectedRods=rods.map((rod,slot)=>({...rod,slot}));
  const controls=documentFor(fishingView(game));
  assert.equal(controls.window.document.querySelectorAll('.scene-rod-control').length,6);
  assert.equal(controls.window.document.querySelectorAll('.scene-rod-control .scene-strike-button').length,6);

@@ -7,7 +7,8 @@ import {IdleGame,xpAt} from '../dist/engine.js';
 import {fishingView} from '../dist/game-view.js';
 import {forecastPanel,rodStudio} from '../dist/angling-ui.js';
 import {sessionPage} from '../dist/session-ui.js';
-import {loadoutSlots,rodPresetPicker} from '../dist/loadout-ui.js';
+import {sessionRodPicker} from '../dist/session-rods-ui.js';
+import {assemblyWorkshop,assemblyDraftFrom} from '../dist/assembly-ui.js';
 
 assert(Object.entries(ENGLISH).every(([key,value])=>key.trim()&&typeof value==='string'&&value.trim()),'Translation entries must never contain an empty pattern or undefined output');
 const checks=[];
@@ -34,8 +35,8 @@ checks.push('Plural session counters, numbered rod actions, species choices and 
 const injection=document.createElement('p');injection.textContent='<img src=x onerror=alert(1)> Je vangsten';applyLanguage(injection,'en');assert.equal(injection.querySelector('img'),null);assert.equal(injection.textContent,'<img src=x onerror=alert(1)> Your catches');assert.deepEqual(LANGUAGES.map(l=>l.id),['en','nl']);assert.equal(languageName('nl'),'Nederlands');
 checks.push('Translation treats all strings as text, creates no HTML and exposes both supported language choices');
 let at=1800000000000;const game=new IdleGame({storage:null,now:()=>at});game.state.xp=xpAt(300);game.state.rodSlots=6;game.state.gear=Object.fromEntries(GEAR.map(item=>[item.id,6]));game.state.money=1e10;game.state.estate.owned=true;
-const fragment=document.createElement('main');fragment.innerHTML=fishingView(game)+forecastPanel(game)+rodStudio(game,game.loadout.rods[0],0)+sessionPage(game)+loadoutSlots(game,game.loadout)+rodPresetPicker(game,game.loadout);applyLanguage(fragment,'en');
+const fragment=document.createElement('main');fragment.innerHTML=fishingView(game)+forecastPanel(game)+rodStudio(game,game.loadout.rods[0],0)+sessionPage(game)+sessionRodPicker(game)+assemblyWorkshop(game,assemblyDraftFrom(game.state.rodPresets[0]));applyLanguage(fragment,'en');
 for(const source of ['WACHT OP EEN BEET','JE STEK IS KLAAR','Je vangsten','Opgeslagen hengelsetups','Je vangstkansen uitgelegd','Welke vis kun je landen?','Kies een hengelplaats','Blankvoorn','Zoete maïs','Rond je sessie af.'])assert(!fragment.textContent.includes(source),source);
-assert(fragment.textContent.includes('Your catch chances explained'));assert(fragment.textContent.includes('Choose a rod slot'));assert(fragment.textContent.includes('Roach'));assert(fragment.textContent.includes('Rod presets'));applyLanguage(fragment,'nl');assert(fragment.textContent.includes('Je vangstkansen uitgelegd'));assert(fragment.textContent.includes('Kies een hengelplaats'));assert(fragment.textContent.includes('Blankvoorn'));
+assert(fragment.textContent.includes('Your catch chances explained'));assert(fragment.textContent.includes('CHOOSE YOUR RODS'));assert(fragment.textContent.includes('Roach'));assert(fragment.textContent.includes('Build & edit rod presets'));applyLanguage(fragment,'nl');assert(fragment.textContent.includes('Je vangstkansen uitgelegd'));assert(fragment.textContent.includes('KIES JE HENGELS'));assert(fragment.textContent.includes('Blankvoorn'));
 checks.push('Real fishing scene, forecast, catch ledger, rod studio, six-slot selector and preset library translate and restore together');
 dom.window.close();console.log(JSON.stringify({status:'PASS',groups:checks.length,checks},null,2));

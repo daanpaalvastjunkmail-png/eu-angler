@@ -34,7 +34,7 @@ const checkEconomy=()=>{const quote=game.quote();assert.equal(number($('#expecte
 
 assert(game);assert.equal(game.state.settings.language,'en');
 game.state.xp=xpAt(10);game.state.money=1000000;game.state.rodSlots=2;
-assert(game.saveLoadout(null,'Feeder + carp week test',[{...starterRod('feeder'),slot:0},{...starterRod('karper'),slot:1}]).ok);
+assert(game.setSessionRods([{...starterRod('feeder'),slot:0},{...starterRod('karper'),slot:1}]).ok);
 change('#plan-water','poldermeer');
 const range=$('#plan-duration');
 assert.equal(Number(range.max),steps.length-1);assert.equal(steps.at(-1),MAX_SESSION_SECONDS);

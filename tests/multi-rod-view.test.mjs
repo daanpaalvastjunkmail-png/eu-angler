@@ -19,8 +19,8 @@ const sessionFor=phases=>({rods:phases.map(phase=>({phase}))});
 {
  for(const count of [1,2,3,6]){
   const game=new IdleGame({storage:null,now:()=>1800000000000});
-  game.state.loadouts=[{id:'mixed',name:'Gemengde loadout',rods:rigs.slice(0,count)}];
-  game.state.activeLoadout='mixed';
+  game.state.selectedRods=rigs.slice(0,count);
+  
   const dom=new JSDOM(fishingView(game)),document=dom.window.document,view=document.querySelector('#fishing-game');
   const lines=[...view.querySelectorAll('[data-scene-line]')],controls=[...view.querySelectorAll('.scene-rod-control')];
   assert.equal(lines.length,count);assert.equal(controls.length,count);
@@ -79,7 +79,7 @@ const sessionFor=phases=>({rods:phases.map(phase=>({phase}))});
 
 {
  const sparse=[{...rigs[0],slot:0},{...rigs[1],slot:2},{...rigs[2],slot:5}],game=new IdleGame({storage:null});
- game.state.loadouts=[{id:'sparse',name:'Eigen plaatsen',rods:sparse}];game.state.activeLoadout='sparse';
+ game.state.selectedRods=sparse;
  const dom=new JSDOM(fishingView(game)),document=dom.window.document;
  assert.deepEqual([...document.querySelectorAll('.scene-rod-control')].map(control=>control.dataset.rodSlot),['0','2','5']);
  assert.deepEqual([...document.querySelectorAll('.scene-rod-control kbd')].map(kbd=>kbd.textContent),['1','3','6']);

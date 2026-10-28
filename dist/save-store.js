@@ -1,3 +1,4 @@
+import {SCHEMA_VERSION} from './tackle.js';
 export const SAVE_KEY='europa-angler-progress';
 export const BACKUP_KEY='europa-angler-progress-backup';
 export const LEGACY_KEY='europa-angler-idle-v2';
@@ -11,7 +12,7 @@ export class SaveStore{
   let invalid=false;
   for(const [key,text]of [[SAVE_KEY,primary],[BACKUP_KEY,this.storage.getItem(BACKUP_KEY)],[LEGACY_KEY,this.storage.getItem(LEGACY_KEY)]]){
    if(!text)continue;
-   try{const raw=JSON.parse(text);if(Number(raw.schemaVersion)>3){this.blocked=true;this.error='NEWER_SAVE';return null;}const state=validate(raw);this.recovered=key===BACKUP_KEY||key!==SAVE_KEY&&primary!==null;this.migrated=key===LEGACY_KEY;this.recoveryUsed=this.recovered;return state;}
+   try{const raw=JSON.parse(text);if(Number(raw.schemaVersion)>SCHEMA_VERSION){this.blocked=true;this.error='NEWER_SAVE';return null;}const state=validate(raw);this.recovered=key===BACKUP_KEY||key!==SAVE_KEY&&primary!==null;this.migrated=key===LEGACY_KEY;this.recoveryUsed=this.recovered;return state;}
    catch(error){if(error.message==='NEWER_SAVE'){this.blocked=true;this.error='NEWER_SAVE';return null;}invalid=true;}
   }
   if(invalid){this.blocked=true;this.error='INVALID_SAVE';}return null;

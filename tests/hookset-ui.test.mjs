@@ -35,7 +35,7 @@ const arm=(index,options={})=>{
 };
 
 assert(game);game.state.money=100000;game.state.xp=xpAt(40);game.state.rodSlots=3;
-assert(game.saveLoadout(null,'Feeder and carp · physical positions 1 / 3',[
+assert(game.setSessionRods([
  {...starterRod('feeder'),slot:0},{...starterRod('karper'),slot:2},
 ]).ok);
 game.setPlan({duration:60,reserve:.1});click('#start-session');

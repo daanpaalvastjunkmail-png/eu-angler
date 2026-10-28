@@ -4,7 +4,7 @@
   "checks": [
     "Inline JS and fonts are embedded",
     "English is the default; topbar switches Dutch/English/Dutch without changing money, level or catches",
-    "Complete loadout selection, saved rods per slot and component menus around a visible rod select real assemblies",
+    "Individual rods are chosen in the planner, physical presets are edited in the workshop and full-loadout/method selectors are absent",
     "Each equipped rod has its own live strike control; focus tabs are absent",
     "Dashboard initializes with storage unavailable on file: in jsdom",
     "One duration slider updates labels, licence cost and supplies without replacing the control, with daily steps from two to seven days",

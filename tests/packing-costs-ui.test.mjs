@@ -82,7 +82,7 @@ const rods=[
  {...starterRod('karper'),slot:1,bait:'boilies',combo:'boilies_corn',liquid:'liquid_scopex',crafted:'rig_basic'},
 ];
 Object.assign(game.state.stock,{feed:123.4,maggots:17.25,corn:8.6,boilies:4.4,liquid_krill:2.2,liquid_scopex:1.75});
-assert(game.saveLoadout(null,'Packing: feeder + carp cocktails',assembleRods(game,rods)).ok);change('#plan-water','poldermeer');drag(45*60);
+assert(game.setSessionRods(assembleRods(game,rods)).ok);change('#plan-water','poldermeer');drag(45*60);
 q=checkPacking();assert(q.valid,q.error);assert.deepEqual(q.rigNeeds,{});
 assert.deepEqual(Object.keys(q.required).sort(),['feed','maggots','corn','boilies','liquid_krill','liquid_scopex'].sort());
 for(const id of Object.keys(q.required))assert.equal(q.missing[id],Math.max(0,Math.ceil(q.required[id]-game.state.stock[id]-1e-9)));

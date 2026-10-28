@@ -865,6 +865,7 @@ Combineer je visstijlen: feeder en karper kunnen tegelijk in dezelfde loadout. I
 Speel deze hengelplaats eerst vrij.|Unlock this rod slot first.
 ÉÉN HENGEL, COMPLEET OPGESLAGEN|ONE ROD, FULLY SAVED
 Hengelpresets|Rod presets
+Hengel opgeslagen. Hij is uit je sessiekeuze gehaald omdat de stijlgrens is bereikt.|Rod saved. It was removed from your session selection because the method limit has been reached.
 Een preset gebruikt je eigen spullen. De keuze wordt meegenomen wanneer je de totale loadout opslaat.|A preset uses your own tackle. Your choice is included when you save the full loadout.
 Hengelpreset verwijderen|Delete rod preset
 Je eerste hengelpreset|Your first rod preset
@@ -1379,4 +1380,38 @@ Importeren lukt niet: onvoldoende opslagruimte. Je vorige spel is behouden.|Impo
 De raming gaat uit van onbeschadigde hengels; overbelasting kan je sessie inkorten.|The estimate assumes undamaged rods; overloading may shorten your session.
 Aantal onderdelen|Number of components
 `.trim().split('\n').filter(line=>line.includes('|')).map(line=>line.split('|'));
-export const ENGLISH = Object.fromEntries([...entries,...fragments,...equipmentEntries]);
+const rodSelectionEntries = `
+Hengelpresets|Rod presets
+Hengel opgeslagen. Hij is uit je sessiekeuze gehaald omdat de stijlgrens is bereikt.|Rod saved. It was removed from your session selection because the method limit has been reached.
+Bouw je eigen hengelpresets.|Build your own rod presets.
+Kies een hengel: de vismethode volgt automatisch. Bewaar elke complete hengel apart en kies je hengels bij Plan je sessie.|Choose a rod: its fishing method follows automatically. Save each complete rod separately and choose your rods when planning a session.
+KIES JE HENGELS|CHOOSE YOUR RODS
+Kies je hengels|Choose your rods
+De gekozen hengel bepaalt je vismethode. Elke fysieke hengel kan één keer mee.|Your chosen rod determines the fishing method. Each physical rod can be used once.
+Geen hengel|No rod
+Kies een opgeslagen hengelpreset|Choose a saved rod preset
+Gekozen hengels|Selected rods
+Hengelpresets bouwen & aanpassen →|Build & edit rod presets →
+Scholingspunten|Training points
+Vrijspelen|Unlock
+VISMETHODE|FISHING METHOD
+Kies eerst een hengel|Choose a rod first
+Wordt bepaald door je hengel|Determined by your rod
+Gekozen voor je sessie|Selected for your session
+Bewaar hier losse hengelpresets. Bij Plan je sessie kies je welke hengels meegaan.|Save individual rod presets here. Choose which rods to take when planning your session.
+Je sessie loopt. Kies je volgende hengels zodra deze is afgelopen.|Your session is running. Choose your next rods once it has ended.
+Kies je hengels voor deze sessie.|Choose your rods for this session.
+Deze hengelplaats is nog niet vrijgespeeld of gekocht.|This rod slot has not been unlocked or purchased yet.
+Bouw en bewaar deze hengel eerst voordat je hem voor een sessie kiest.|Build and save this rod before choosing it for a session.
+Hengel uit elkaar gehaald. Onderdelen zijn vrij en de hengel is uit je sessiekeuze verwijderd.|Rod dismantled. Its components are free and it has been removed from your session selection.
+Kies zeehengels voor zee en zoetwaterhengels voor binnenwater.|Choose sea rods for the sea and freshwater rods for inland waters.
+Je haken of lijnen passen niet bij de vissen in dit water. Kies je hengels in de sessieplanner.|Your hooks or lines do not suit the fish in this water. Choose your rods in the session planner.
+De onderdelen worden vrijgegeven. Deze hengel verdwijnt uit je sessiekeuze.|The components will be freed. This rod will be removed from your session selection.
+Een volledige kopie van je voortgang, hengelpresets, vispassen en eigendommen.|A complete copy of your progress, rod presets, permits and property.
+Bouw je hengelpresets|Build your rod presets
+Je krijgt een feeder-, karper- en dobberhengel. De hengel bepaalt automatisch je vismethode. Stel hengels samen met eigen onderdelen en bewaar ze op naam. Een onderdeel past maar in één gebouwde hengel tegelijk. Vanaf level 10 passen twee T1-hengels in je opleiding; T1 + T2 vanaf 15 en twee T2 vanaf 18. Meer plaatsen koop je op level 40, 90, 170 en 300.|You receive a feeder, carp and float rod. The rod automatically determines your fishing method. Build rods with separate components and save each by name. A component fits only one assembled rod at a time. Training allows two T1 rods from level 10, T1 + T2 from 15 and two T2 rods from 18. Buy more slots at levels 40, 90, 170 and 300.
+Kies bij stap 01 je losse hengels: maximaal zes in totaal, met maximaal twee dobberhengels, vier feeders en vier karperhengels. Je level, gekochte plaatsen en scholingspunten blijven gelden. Kies je water en stel met één schuifregelaar de duur van je sessie én vispas in, tot maximaal één week. De paklijst rekent voer en aas uit met je gekozen reserve. Starten koopt de ontbrekende voorraad en passende vispas in één keer.|Choose individual rods in step 01: up to six in total, with no more than two float rods, four feeders and four carp rods. Your level, purchased slots and training points still apply. Choose a water and set the duration of your session and permit with one slider, up to one week. The packing list calculates feed and bait with your selected reserve. Starting buys missing supplies and a suitable permit together.
+Combineer drie van je hengelpresets.|Combine three of your rod presets.
+sessiekeuze|session selection
+`.trim().split('\n').map(line=>line.split('|'));
+export const ENGLISH = Object.fromEntries([...entries,...fragments,...equipmentEntries,...rodSelectionEntries]);

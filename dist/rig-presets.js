@@ -7,7 +7,9 @@ const supplies=Object.fromEntries(SUPPLIES.map(x=>[x.id,x]));
 
 // Templates contain component identifiers only. They never grant items or carry a slot.
 export function rodSnapshot(rod){
- if(!rod||!STYLES.some(x=>x.id===rod.style))return null;
+ const method=gear[rod?.rod]?.style;
+ if(!rod||!STYLES.some(x=>x.id===method))return null;
+ rod={...rod,style:method};
  const r=Object.fromEntries(ROD_FIELDS.map(k=>[k,rod[k]??(['liquid','crafted','indicator'].includes(k)?null:k==='combo'?'none':undefined)]));
  r.baitSize=['small','normal','large'].includes(rod.baitSize)?rod.baitSize:'normal';
  for(const k of ['rod','reel','line','hook','terminal']){const item=gear[r[k]];if(!item||item.category!==k||(item.style!=='all'&&item.style!==r.style))return null;}
