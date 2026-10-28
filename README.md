@@ -1,4 +1,4 @@
-# Europa Angler — Fishing Idle 3.1.1
+# Europa Angler — Fishing Idle 3.1.2
 
 Een speelbare lokale idle-visgame met Engels als standaard en een direct beschikbare Nederlandse taalkeuze. Je bouwt van één hengel naar een visbedrijf met meerdere lijnen, eigen viswater en een vloot. De vormgeving, content en spelregels zijn oorspronkelijk; Melvor Idle was alleen een genre-inspiratie.
 
@@ -23,6 +23,10 @@ Koppel de bestaande Worker `europa-angler` via Settings > Builds > Connect aan d
 Cloudflare installeert de npm-afhankelijkheden. De build voert syntaxcontroles, alle spelsuites en de daadwerkelijke standalone- en webreleasecontroles uit. Een fout stopt het proces voor publicatie. De Wrangler-configuratie bovenaan wijst naar `build/web/` en houdt de bestaande Worker-naam aan. De afzonderlijke configuratie in `workers/` is voor het handmatige updatepakket, niet voor de rootdirectory van deze Git-koppeling.
 
 Een push naar de gekozen productiebranch triggert de volgende build en publicatie. De eerste geslaagde deployment moet in Cloudflare worden gecontroleerd; alleen toegang aan GitHub geven of deze bestanden lokaal voorbereiden activeert de verbinding nog niet. Speel op het bestaande speladres met hetzelfde browserprofiel om dezelfde save te blijven gebruiken. Er is geen synchronisatie tussen apparaten.
+
+## Herstel van openen en herladen — 3.1.2
+
+Cloudflare verwijst `/index.html` door naar `/`. De offlinecache normaliseert deze doorgestuurde pagina voordat de browser hem opnieuw gebruikt; zo voorkomt de game `ERR_FAILED` bij openen of herladen. Een bestaande cache met deze fout wordt automatisch vervangen zodra de herstellende serviceworker wordt opgehaald. Dit wist geen spelopslag en herlaadt geen actieve speelsessie. Gewone latere updates blijven wachten op **Opslaan & bijwerken**.
 
 ## Indeling — 3.1.1
 

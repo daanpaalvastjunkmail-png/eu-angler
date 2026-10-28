@@ -38,4 +38,37 @@ const checks=[],legacyText=fs.readFileSync(new URL('./fixtures/save-2.8.1.json',
  const source=fs.readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8'),handlers={},logs=[];const cache={addAll:async assets=>{assert(assets.length>30);assert(assets.every(a=>a.cache==='reload'));},match:async()=>null};const context={self:{addEventListener:(n,f)=>handlers[n]=f,skipWaiting:()=>logs.push('activate'),clients:{claim:async()=>logs.push('claim')},location:{origin:'https://example.pages.dev'}},caches:{open:async()=>cache,keys:async()=>['europa-angler-idle-old','unrelated'],delete:async k=>logs.push(k)},Request:class{constructor(url,options){this.url=url;Object.assign(this,options);}},URL,fetch:async()=>({})};vm.runInNewContext(source,context);let work;handlers.install({waitUntil:p=>work=p});await work;assert(!logs.includes('activate'));handlers.message({data:{type:'ACTIVATE_UPDATE'}});assert(logs.includes('activate'));handlers.activate({waitUntil:p=>work=p});await work;assert(logs.includes('europa-angler-idle-old'));assert(!logs.includes('unrelated'));assert(!source.includes('localStorage'));
  checks.push('Service worker precaches a coherent version, waits for activation, removes only old app caches and never touches browser save storage');
 }
+{
+ const source=fs.readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8');
+ const redirectedDocument=()=>{
+  const response=new Response('<main>Saved fishing game</main>',{status:200,statusText:'OK',headers:{'Content-Type':'text/html','X-Release':'previous'}});
+  Object.defineProperty(response,'redirected',{value:true});
+  return response;
+ };
+ for(const brokenPredecessor of [false,true]){
+  const handlers={},opened=[],logs=[];let stored=null;
+  const current={addAll:async()=>{},match:async()=>stored?stored.clone():redirectedDocument(),put:async(key,response)=>{assert.equal(key,'./index.html');stored=response;}};
+  const previous={match:async()=>brokenPredecessor?redirectedDocument():new Response('Working old game')};
+  const context={self:{addEventListener:(name,handler)=>handlers[name]=handler,skipWaiting:async()=>logs.push('activate'),clients:{claim:async()=>logs.push('claim')},location:{origin:'https://angler.example'}},caches:{open:async name=>{opened.push(name);return name==='europa-angler-idle-previous'?previous:current;},keys:async()=>['unrelated-cache','europa-angler-idle-previous'],delete:async()=>{}},Request:class{constructor(url,options){this.url=url;Object.assign(this,options);}},Response,URL,fetch:async()=>{throw Error('offline');}};
+  vm.runInNewContext(source,context);let installed;
+  handlers.install({waitUntil:promise=>installed=promise});await installed;
+  assert.equal(stored.redirected,false);assert.equal(stored.status,200);assert.equal(stored.headers.get('Content-Type'),'text/html');assert.equal(await stored.clone().text(),'<main>Saved fishing game</main>');
+  assert.equal(logs.includes('activate'),brokenPredecessor);assert(!logs.includes('claim'));assert(!opened.includes('unrelated-cache'));
+  let served;handlers.fetch({request:{url:'https://angler.example/',method:'GET',mode:'navigate',redirect:'manual'},respondWith:promise=>served=promise});
+  const document=await served;assert.equal(document.redirected,false);assert.equal(document.headers.get('X-Release'),'previous');assert.equal(await document.text(),'<main>Saved fishing game</main>');
+ }
+ checks.push('Cloudflare-style redirected documents become navigation-safe offline pages; only a broken older app cache triggers automatic worker repair, without claiming or reloading tabs during install');
+}
+{
+ const source=fs.readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8'),handlers={},network=[];let failCache=false;
+ const context={self:{addEventListener:(name,handler)=>handlers[name]=handler,location:{origin:'https://angler.example'}},caches:{open:async()=>{if(failCache)throw Error('Cache unavailable');return{match:async()=>{const response=new Response('Recovered cached game',{headers:{'Content-Type':'text/html'}});Object.defineProperty(response,'redirected',{value:true});return response;}};}},Response,URL,fetch:async request=>{network.push(request.url);return new Response('Live response');}};
+ vm.runInNewContext(source,context);
+ async function request(mode,url){let served;handlers.fetch({request:{url,mode,method:'GET',redirect:'manual'},respondWith:promise=>served=promise});return served;}
+ const cached=await request('navigate','https://angler.example/');assert.equal(cached.redirected,false);assert.equal(await cached.text(),'Recovered cached game');assert.equal(network.length,0);
+ failCache=true;
+ for(const [mode,url]of [['navigate','https://angler.example/'],['cors','https://angler.example/style.css']])assert.equal(await(await request(mode,url)).text(),'Live response');
+ assert.deepEqual(network,['https://angler.example/','https://angler.example/style.css']);
+ assert.equal(await request('cors','https://other.example/asset.js'),undefined);
+ checks.push('Navigation also repairs an already-cached redirected response; unavailable cache storage falls back to the network for pages and assets, without intercepting other origins');
+}
 console.log(JSON.stringify({status:'PASS',groups:checks.length,checks},null,2));
