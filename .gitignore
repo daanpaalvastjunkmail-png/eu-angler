@@ -1,0 +1,10 @@
+node_modules/
+build/
+.wrangler/
+.openai/
+test-results/
+.env
+.env.*
+.dev.vars
+.dev.vars.*
+*.log
