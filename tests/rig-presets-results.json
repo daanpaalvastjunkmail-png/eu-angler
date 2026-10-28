@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "groups": 10,
+  "checks": [
+    "New games start in English with three independent rod templates and no granted equipment",
+    "Individual setups save, replace and delete as component snapshots without inventory changes",
+    "Saving and applying enforce ownership, matching components and gear level gates",
+    "Thirty-template limit allows replacement while rejecting additional templates",
+    "Level-300 six-slot loadout supports two feeders, three carp rods and one float concurrently",
+    "Positions may have gaps while duplicate, locked, noninteger and malformed slots are rejected",
+    "Applying to a chosen slot checks combined physical quantities and per-style limits atomically",
+    "Editing a template or whole loadout leaves the running session equipment snapshot intact",
+    "Save, reload and old-version migration retain balances, normalize legacy positions and persist language",
+    "Prestige keeps knowledge and chosen language; imports strip unknown fields and reject invalid or duplicate entries"
+  ]
+}

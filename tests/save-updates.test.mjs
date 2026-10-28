@@ -1,0 +1,41 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {IdleGame} from '../dist/engine.js';
+import {SaveStore,SAVE_KEY,BACKUP_KEY,LEGACY_KEY} from '../dist/save-store.js';
+import {memoryStorage} from './tackle-fixtures.mjs';
+import {setupUpdates} from '../dist/updates.js';
+const checks=[],legacyText=fs.readFileSync(new URL('./fixtures/save-2.8.1.json',import.meta.url),'utf8'),legacy=JSON.parse(legacyText),now=()=>legacy.lastAt;
+{
+ const storage=memoryStorage();storage.setItem(LEGACY_KEY,legacyText);const g=new IdleGame({storage,now});assert(!g.store.blocked);assert.equal(g.state.schemaVersion,3);for(const k of ['money','xp','craftXp','net','sessions','records','permits','catchChoices','estate','stats'])assert.deepEqual(g.state[k],legacy[k],k);for(const [id,n]of Object.entries(legacy.stock))assert.equal(g.state.stock[id],n);assert.equal(g.state.session.remaining,legacy.session.remaining);assert.deepEqual(g.state.session.fish,legacy.session.fish);assert.equal(g.state.session.rods.length,2);assert(g.state.session.loadout.rods.every(r=>g.state.rodPresets.some(p=>p.id===r.sourcePresetId&&p.assembled)));assert(g.state.rodPresets.some(p=>p.name==='Alternate maize'&&!p.assembled));assert.equal(g.state.gear.feeder_rod_field,2);assert(g.state.gear.line_field>=4);assert.equal(storage.getItem(LEGACY_KEY),legacyText);assert(storage.getItem(SAVE_KEY));const count=g.state.tackleItems.length;g.save();const again=new IdleGame({storage,now});assert.equal(again.state.tackleItems.length,count);assert.deepEqual(again.state.tackleItems,g.state.tackleItems);
+ storage.setItem(LEGACY_KEY,JSON.stringify({...legacy,money:1}));const afterOldTab=new IdleGame({storage,now});assert.equal(afterOldTab.state.money,legacy.money);
+ checks.push('A fixed real 2.8.1 save migrates active two-rod fishing, all money/XP/catches/permits/property and alternatives without duplication; old-tab writes cannot overwrite the stable key');
+}
+{
+ const storage=memoryStorage(),g=new IdleGame({storage,now});g.state.money=123.45;g.save();const good=storage.getItem(SAVE_KEY);g.state.money=234.56;g.save();assert.equal(storage.getItem(BACKUP_KEY),good);storage.setItem(SAVE_KEY,'{damaged');const recovered=new IdleGame({storage,now});assert.equal(recovered.state.money,123.45);assert(recovered.store.recoveryUsed);assert.equal(storage.getItem(BACKUP_KEY),good);
+ const newer=JSON.stringify({...recovered.state,schemaVersion:99});storage.setItem(SAVE_KEY,newer);const oldApp=new IdleGame({storage,now});assert(oldApp.store.blocked);assert.equal(oldApp.store.error,'NEWER_SAVE');assert.equal(storage.getItem(SAVE_KEY),newer);assert.equal(oldApp.save(),false);assert.equal(oldApp.exportSave(),newer);assert(!oldApp.quote().valid);const before=oldApp.state.lastAt;oldApp.advanceTo(now()+600000);assert.equal(oldApp.state.lastAt,before);
+ checks.push('Rolling backup recovers a damaged save; future schemas are protected from reset, simulation and overwrite and can be exported intact');
+}
+{
+ const storage=memoryStorage();storage.setItem(SAVE_KEY,'{broken');storage.setItem(BACKUP_KEY,'bad');const g=new IdleGame({storage,now});assert(g.store.blocked);assert.equal(storage.getItem(SAVE_KEY),'{broken');assert.equal(storage.getItem(BACKUP_KEY),'bad');assert(g.importSave(legacyText).ok);assert(!g.store.blocked);assert.equal(g.state.money,legacy.money);assert.equal(JSON.parse(storage.getItem(SAVE_KEY)).schemaVersion,3);
+ const conflict=JSON.parse(g.exportSave()).save;conflict.rodPresets[1].items.line=conflict.rodPresets[0].items.line;const current=g.state.money;assert(!g.importSave(JSON.stringify(conflict)).ok);assert.equal(g.state.money,current);
+ checks.push('Unreadable saves never become a new persisted game; explicit valid imports recover them and conflicting component reservations are rejected');
+}
+{
+ const storage=memoryStorage(),first=new IdleGame({storage,now}),second=new IdleGame({storage,now});second.state.money=765.43;assert(second.save());first.state.money=1;assert(!first.save());assert(first.store.blocked);assert.equal(first.store.error,'OTHER_TAB');assert.equal(JSON.parse(storage.getItem(SAVE_KEY)).money,765.43);
+ checks.push('A stale tab cannot overwrite progress saved by another tab');
+}
+{
+ const storage=memoryStorage(),g=new IdleGame({storage,now});g.state.money=456.78;g.save();const good=storage.getItem(SAVE_KEY),set=storage.setItem;storage.setItem=(k,v)=>{if(k===SAVE_KEY&&storage.getItem(BACKUP_KEY))throw Error('QuotaExceededError');set(k,v);};g.state.money=567.89;assert(g.save());assert.equal(storage.getItem(BACKUP_KEY),null);assert.equal(JSON.parse(storage.getItem(SAVE_KEY)).money,567.89);
+ storage.setItem=()=>{throw Error('QuotaExceededError');};const retained=storage.getItem(SAVE_KEY),oldState=g.state;assert(!g.importSave(legacyText).ok);assert.equal(g.state,oldState);assert.equal(storage.getItem(SAVE_KEY),retained);g.state.money++;assert(!g.save());assert.equal(storage.getItem(SAVE_KEY),retained);
+ checks.push('Quota pressure drops only the disposable backup; failed imports and failed primary writes retain the previous save and live game');
+}
+{
+ const events={},workerEvents={},log=[];let waiting={postMessage:m=>log.push(m.type)},allowed=true,ready=0,reloaded=0;const reg={get waiting(){return waiting},installing:{state:'installing',addEventListener:(n,f)=>workerEvents[n]=f},addEventListener:(n,f)=>events['reg:'+n]=f,update:async()=>log.push('check')};Object.defineProperty(globalThis,'navigator',{configurable:true,value:{serviceWorker:{register:async(path,options)=>{assert.equal(path,'./sw.js');assert.equal(options.updateViaCache,'none');return reg;},addEventListener:(n,f)=>events[n]=f}}});globalThis.location={protocol:'https:'};const updates=setupUpdates({sync:()=>log.push('sync'),save:()=>{log.push('save');return allowed;}},{ready:()=>ready++,error:m=>log.push('error'),reload:()=>reloaded++});await updates.check();assert(ready>0);events.controllerchange();assert.equal(reloaded,0);allowed=false;assert(!await updates.install());assert(!log.includes('ACTIVATE_UPDATE'));allowed=true;assert(await updates.install());assert.deepEqual(log.slice(-3),['sync','save','ACTIVATE_UPDATE']);events.controllerchange();assert.equal(reloaded,1);events.controllerchange();assert.equal(reloaded,1);waiting=null;assert(!await updates.install());
+ checks.push('Update activation requires a successful save; failed storage blocks activation and reload occurs only after an explicitly requested update');
+}
+{
+ const source=fs.readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8'),handlers={},logs=[];const cache={addAll:async assets=>{assert(assets.length>30);assert(assets.every(a=>a.cache==='reload'));},match:async()=>null};const context={self:{addEventListener:(n,f)=>handlers[n]=f,skipWaiting:()=>logs.push('activate'),clients:{claim:async()=>logs.push('claim')},location:{origin:'https://example.pages.dev'}},caches:{open:async()=>cache,keys:async()=>['europa-angler-idle-old','unrelated'],delete:async k=>logs.push(k)},Request:class{constructor(url,options){this.url=url;Object.assign(this,options);}},URL,fetch:async()=>({})};vm.runInNewContext(source,context);let work;handlers.install({waitUntil:p=>work=p});await work;assert(!logs.includes('activate'));handlers.message({data:{type:'ACTIVATE_UPDATE'}});assert(logs.includes('activate'));handlers.activate({waitUntil:p=>work=p});await work;assert(logs.includes('europa-angler-idle-old'));assert(!logs.includes('unrelated'));assert(!source.includes('localStorage'));
+ checks.push('Service worker precaches a coherent version, waits for activation, removes only old app caches and never touches browser save storage');
+}
+console.log(JSON.stringify({status:'PASS',groups:checks.length,checks},null,2));

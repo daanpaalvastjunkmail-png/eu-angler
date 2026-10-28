@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "groups": 8,
+  "checks": [
+    "Natural expiry preselects sale for every fish without payment; departure remains blocked until one explicit checkout pays the full batch",
+    "Explicit pending decisions remain supported and survive reload; incomplete stopped batches never settle partially",
+    "Mixed checkout pays exact sales and release XP, stocks the pond, empties all fish and cannot repeat rewards",
+    "Over-capacity pond transfers reject the whole batch before any sale, release, XP, fish or history mutation",
+    "Reload preserves individual release and pond overrides plus default sales without paying or losing fish before checkout",
+    "Old carried trophy fish and obsolete keep choices migrate to default sale without automatic payout; release remains an explicit override",
+    "A running-session batch processes all default sales and explicit overrides, leaving no fish to carry after an immediate stop",
+    "Offline completion preselects sale without paying; reloading cannot replay catches and checkout still clears the departure gate"
+  ]
+}

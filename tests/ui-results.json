@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "groups": 16,
+  "checks": [
+    "English is the default, Dutch can be selected, and the water view initializes full scene, per-rod striking and direct catches",
+    "All twelve pages render, including locked later-game systems",
+    "Supply packs and extra physical rod purchases update inventory and money",
+    "One slider updates session and license together, live prices and supplies change while dragging, styles switch and the five-minute session completes",
+    "Sales default without payout; deselect-all clears every decision and blocks checkout until reset, while batch choices and complete history persist",
+    "Loadout name and gear edits persist through the real UI",
+    "Second rod place purchase, multi-style loadout addition and supply quote",
+    "Visual rod editor hotspots focus actual component fields",
+    "Beetmelder shop purchase, real loadout equipping and visible bell",
+    "Real tip bend, per-rod strike and Space rescue update direct catches without replacing scene; all rods stay visible and manual-stop checkout works",
+    "Work order completion and selling crafted rigs through the UI",
+    "Tournament entry confirmation, timed scoreboard and result collection",
+    "Estate purchase, editable name, fish stocking, breeding and income collection",
+    "Boat purchase confirmation, rental dispatch and fleet income collection",
+    "Prestige confirmation, stated persistent assets, reset level and permanent point spending",
+    "Settings apply, reduced-motion support and gameplay guide modal"
+  ],
+  "domErrors": 0
+}

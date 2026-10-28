@@ -1,0 +1,9 @@
+const CACHE='europa-angler-idle-v3.0.0';
+const ASSETS=["./assembly-ui.js", "./tackle.js", "./training.js", "./save-store.js", "./release.js", "./updates.js", "./water-panels.js", "./catch-model.js", "./packing-list.js", "./catch-sort.js", "./economy.js", "./save-codec.js", "./rig-presets.js", "./loadout-ui.js", "./i18n.js", "./i18n-data.js", "./session-planner.js", "./game-view.js", "./fishing-scene.js", "./inline-catches.js", "./forecast.js", "./angling-visuals.js", "./angling-ui.js", "./bite-audio.js", "./journal.js", "./session-ui.js", "./art.js", "./data.js", "./engine.js", "./visuals.js", "./index.html", "./style.css", "./app.js", "./icon.svg", "./icon-192.png", "./icon-512.png", "./manifest.webmanifest", "./vendor/font-0.ttf", "./vendor/font-1.ttf", "./vendor/font-2.ttf", "./vendor/font-3.ttf", "./vendor/font-4.ttf", "./vendor/font-5.ttf", "./vendor/font-6.ttf", "./vendor/font-7.ttf", "./vendor/font-8.ttf", "./vendor/fonts.css", "./vendor/DM-Sans-OFL.txt", "./vendor/Manrope-OFL.txt"];
+self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(url=>new Request(url,{cache:'reload'})))));});
+self.addEventListener('message',event=>{if(event.data?.type==='ACTIVATE_UPDATE')self.skipWaiting();});
+self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('europa-angler-idle-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
+self.addEventListener('fetch',event=>{if(event.request.method!=='GET'||new URL(event.request.url).origin!==self.location.origin)return;
+ if(event.request.mode==='navigate')event.respondWith(caches.open(CACHE).then(async cache=>(await cache.match('./index.html'))||fetch(event.request)));
+ else event.respondWith(caches.open(CACHE).then(async cache=>(await cache.match(event.request))||fetch(event.request)));
+});

@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "groups": 13,
+  "checks": [
+    "Natural quivertip nibble precedes the true bite; early striking loses the opportunity",
+    "Manual timed strike grants perfect XP and shorter next cast; repeated strikes cannot duplicate a fish",
+    "Failed assistant strikes remain visible and rescuable; unattended rescue windows expire without a catch",
+    "Fast clicking never bypasses hook size or line strength constraints",
+    "Style-specific accessories validate; window, casting, landing, auto reaction and camouflage upgrades affect actual mechanics",
+    "Reload preserves a pending bite; event simulation produces identical catches and misses offline and in quarter-second ticks",
+    "Old v2 saves preserve fish as default-sale checkout rows; leaving or starting another session waits until all are disposed",
+    "Complete checkout sells exact value, releases fish for exact bonus XP and stocks the pond; full history survives prestige without retained fish or duplicate rewards",
+    "Insufficient pond capacity rejects the entire checkout without partial cash or release XP; all decisions and departure gate survive reload",
+    "Automatic sales stay in the full session history and are never available for another sale",
+    "Analytical catch rates, species shares and size bins match 7,796 seeded simulated catches (auto 60.9/h vs forecast 60.0/h)",
+    "Actively responding to genuine bites produces more catches over long sessions (3594 active vs 1943 idle)",
+    "Audio scheduling distinguishes standard reel, upgrade alarm, bells and silent floats; mute suppresses oscillators"
+  ]
+}

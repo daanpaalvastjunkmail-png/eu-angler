@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {JSDOM} from 'jsdom';
+import {IdleGame,starterRod,xpAt} from '../dist/engine.js';
+import {loadoutSlots,loadoutPresetControl} from '../dist/loadout-ui.js';
+import {assemblyWorkshop,assemblyDraftFrom,academyCard} from '../dist/assembly-ui.js';
+import {assembleRods} from './tackle-fixtures.mjs';
+const checks=[],g=new IdleGame({storage:null,now:()=>1800000000000}),doc=html=>new JSDOM(html).window.document;
+g.state.xp=xpAt(10);g.state.rodSlots=2;
+let d=doc(loadoutSlots(g,g.loadout,1));assert.equal(d.querySelectorAll('.rod-slot-container').length,6);assert.equal(d.querySelectorAll('[data-slot-rod-preset]').length,2);for(const s of d.querySelectorAll('select'))assert(!s.closest('button'));assert(d.querySelector('[data-slot-rod-preset="1"] option[value="rig_feeder"]').disabled);assert(!d.querySelector('[data-slot-rod-preset="1"] option[value="rig_karper"]').disabled);checks.push('Every unlocked physical slot has a separate accessible assignment selector with duplicate/lock checks');
+const p=g.state.rodPresets[0],draft=assemblyDraftFrom(p);draft.name='<script>custom</script>';const before=JSON.stringify(g.state);d=doc(assemblyWorkshop(g,draft));assert.equal(d.querySelector('#assembly-name').value,draft.name);assert(!d.querySelector('script'));assert(d.querySelector('svg.rod-visual'));for(const field of ['rod','reel','line','hook','terminal','indicator','bait','baitSize','combo','liquid','crafted'])assert(d.querySelector('[data-assembly-field="'+field+'"]').getAttribute('aria-label'));assert.equal(JSON.stringify(g.state),before);checks.push('Workshop renders eleven labeled selectors and the rod, escapes custom names and never mutates gameplay');
+g.state.xp=xpAt(18);const rods=assembleRods(g,[{...starterRod('feeder'),rod:'feeder_rod_scout'}, {...starterRod('karper'),rod:'karper_rod_scout'}]);g.state.xp=xpAt(15);d=doc(academyCard(g,rods));assert(d.body.textContent.includes('level 18'));assert.equal(d.querySelectorAll('.academy-tiers>span').length,7);assert.equal(d.querySelectorAll('.academy-lessons>div').length,20);checks.push('Training preview shows current limits, next eligibility and the complete level-300 path');
+d=doc(loadoutPresetControl(g,g.loadout));assert.equal(d.querySelector('#loadout-preset-select').value,g.loadout.id);assert(d.querySelector('[data-action="new-loadout"]'));checks.push('Complete loadout preset selector remains independent from physical rod editing');
+console.log(JSON.stringify({status:'PASS',groups:checks.length,checks},null,2));

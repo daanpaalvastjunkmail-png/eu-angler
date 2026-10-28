@@ -1,0 +1,55 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import {JSDOM,VirtualConsole} from 'jsdom';
+import {IdleGame} from '../dist/engine.js';
+
+// Exercise disclosure state while the real session and checkout UI keep running.
+const checks=[],errors=[],virtualConsole=new VirtualConsole();
+virtualConsole.on('jsdomError',error=>errors.push(String(error)));
+const html=await fs.readFile(new URL('../dist/index.html',import.meta.url),'utf8');
+const dom=new JSDOM(html,{url:'https://europa-water-panels.test/',pretendToBeVisual:true,virtualConsole});
+let clock=1800000000000;Date.now=()=>clock;
+globalThis.setInterval=()=>1;
+const realTimeout=globalThis.setTimeout;
+globalThis.setTimeout=(callback,milliseconds,...args)=>{const timer=realTimeout(callback,milliseconds,...args);timer.unref?.();return timer;};
+Object.assign(globalThis,{window:dom.window,document:dom.window.document,localStorage:dom.window.localStorage,location:dom.window.location});
+Object.defineProperty(globalThis,'navigator',{value:dom.window.navigator,configurable:true});
+window.scrollTo=()=>{};window.requestAnimationFrame=()=>1;
+let game;const realOnChange=IdleGame.prototype.onChange;
+IdleGame.prototype.onChange=function(callback){game=this;return realOnChange.call(this,callback);};
+window.addEventListener('error',event=>errors.push(String(event.error||event.message)));
+await import('../dist/app.js');
+const $=selector=>{const element=document.querySelector(selector);assert(element,'Missing '+selector);return element;};
+const noErrors=()=>assert.equal(errors.length,0,errors.join('\n'));
+const click=selector=>{const element=$(selector);assert(!element.disabled,'Disabled '+selector);element.click();noErrors();};
+const change=(selector,value)=>{const element=$(selector);element.value=String(value);element.dispatchEvent(new window.Event('change',{bubbles:true}));noErrors();};
+const page=id=>click(`.nav-item[data-page="${id}"]`);
+const toggle=id=>$(`[data-water-panel-toggle="${id}"]`);
+const body=id=>document.getElementById(toggle(id).getAttribute('aria-controls'));
+const assertClosed=(id,closed)=>{assert.equal(body(id).hidden,closed);assert.equal(toggle(id).getAttribute('aria-expanded'),String(!closed));assert.equal(game.state.settings.waterPanels[id],closed);};
+const business=()=>JSON.stringify({money:game.state.money,stock:game.state.stock,session:game.state.session,net:game.state.net,choices:game.state.catchChoices,plan:game.state.plan,seed:game.state.seed,stats:game.state.stats});
+for(const id of ['catches','planner','activity']){assertClosed(id,false);assert.equal(toggle(id).type,'button');assert.equal(toggle(id).title,'Collapse');}
+let scene=$('#scene-foreground'),slider=$('#plan-duration'),before=business();
+for(const id of ['catches','planner','activity']){click(`[data-water-panel-toggle="${id}"]`);assertClosed(id,true);assert.equal(toggle(id).title,'Expand');}
+assert.equal($('#scene-foreground'),scene);assert.equal($('#plan-duration'),slider);assert.equal(business(),before);
+page('statistics');page('home');for(const id of ['catches','planner','activity'])assertClosed(id,true);
+const copied=new Map(Object.entries(localStorage));const reloaded=new IdleGame({storage:{getItem:k=>copied.get(k)||null,setItem:(k,v)=>copied.set(k,v)},now:()=>clock});assert.deepEqual(reloaded.state.settings.waterPanels,game.state.settings.waterPanels);
+const imported=new IdleGame({storage:null,now:()=>clock});assert(imported.importSave(game.exportSave()).ok);assert.deepEqual(imported.state.settings.waterPanels,game.state.settings.waterPanels);
+const legacy=JSON.parse(game.exportSave());delete legacy.save.settings.waterPanels;assert(imported.importSave(JSON.stringify(legacy)).ok);assert.deepEqual(imported.state.settings.waterPanels,{catches:false,planner:false,activity:false});
+checks.push('All three accessible disclosure buttons hide only their contents, preserve scene/planner nodes and money, and restore preferences after navigation, reload and save import; older saves default open');
+change('.topbar [data-language-select]','nl');assert.equal(toggle('planner').title,'Uitklappen');assert(toggle('planner').textContent.includes('Plan je sessie'));for(const id of ['catches','planner','activity'])assertClosed(id,true);
+change('.topbar [data-language-select]','en');assert.equal(toggle('planner').title,'Expand');assert(toggle('planner').textContent.includes('Plan your session'));
+click('[data-action="show-planner"]');assertClosed('planner',false);assert.equal(document.activeElement,$('#plan-water'));
+click('#start-session');assert(game.state.session);click('[data-water-panel-toggle="planner"]');assertClosed('planner',true);assertClosed('catches',true);
+checks.push('Panel titles/tooltips follow English or Dutch without resetting preferences; the scene planning action expands the planner and focuses the water selector');
+scene=$('#scene-foreground');before=business();toggle('catches').focus();
+const key=new window.KeyboardEvent('keydown',{code:'Space',key:' ',bubbles:true,cancelable:true});toggle('catches').dispatchEvent(key);assert(!key.defaultPrevented);assert.equal(business(),before,'Space on a disclosure button must not strike a rod');
+clock+=120000;game.advanceTo(clock);game.emit('tick');assert(game.state.session);assert(game.state.stats.caught>0);assertClosed('catches',true);assertClosed('planner',true);assert.equal($('#scene-foreground'),scene);assert.equal(document.activeElement,toggle('catches'),'New catches should preserve keyboard focus on the disclosure');assert.equal($('#home-catch-count').textContent,String(game.sessionRows().length));assert.equal($('.planner>.panel-head [data-live="remaining"]').textContent,'13:00');
+const afterFishing=business();click('[data-water-panel-toggle="catches"]');assertClosed('catches',false);assert.equal(business(),afterFishing);assert(document.querySelectorAll('[data-catch-choice]').length>0);click('[data-water-panel-toggle="catches"]');
+toggle('planner').focus();const rodKey=new window.KeyboardEvent('keydown',{code:'Digit1',key:'1',bubbles:true,cancelable:true});toggle('planner').dispatchEvent(rodKey);assert(rodKey.defaultPrevented,'Number shortcuts should still reach the fishing controls when a panel heading has focus');
+checks.push('Collapsed panels keep receiving live catches, totals and remaining time while fishing continues; keyboard Space retains native button behavior, rod number shortcuts remain available and opening reveals the unchanged catch decisions');
+clock+=780000;game.advanceTo(clock);game.emit('tick');assert(game.awaitingSettlement);assertClosed('catches',false);assertClosed('planner',true);assert(toggle('catches').textContent.includes('Settle your session'));assert(game.sessionRows('checkout').every(f=>f.choice==='sell'));
+click('[data-water-panel-toggle="catches"]');assertClosed('catches',true);game.emit('tick');assertClosed('catches',true);assert(!game.startSession().ok);
+click('[data-action="review-catches"]');assertClosed('catches',false);click('[data-journal-bulk="pending"]');assert($('[data-action="settle-session"]').disabled);click('[data-journal-bulk="sell"]');const cash=game.state.money,value=game.state.net.reduce((n,f)=>n+f.value,0);click('[data-action="settle-session"]');assert.equal(game.state.money,Math.round((cash+value)*100)/100);assert(!game.awaitingSettlement);assert.equal(game.state.net.length,0);
+checks.push('Session expiry opens the catch choices once; manual collapse remains possible, the scene review action reopens them, and mandatory checkout still prevents departure or unintended payment');
+noErrors();console.log(JSON.stringify({status:'PASS',groups:checks.length,checks,domErrors:errors.length,limit:'Actual app handlers, saved state and DOM; no browser rasterisation or Android hardware'},null,2));dom.window.close();

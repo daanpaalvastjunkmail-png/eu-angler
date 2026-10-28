@@ -1,0 +1,20 @@
+{
+  "name": "europa-angler-idle",
+  "version": "3.0.0",
+  "type": "module",
+  "private": true,
+  "description": "A long-form European fishing idle game with a local deterministic simulation",
+  "scripts": {
+    "build": "node scripts/build-standalone.mjs",
+    "test": "node tests/engine.test.mjs && node tests/session-plan.test.mjs && node tests/week-planner.test.mjs && node tests/economy.test.mjs && node tests/save-codec.test.mjs && node tests/angling.test.mjs && node tests/checkout.test.mjs && node tests/rig-presets.test.mjs && node tests/scene-visual.test.mjs && node tests/multi-rod-view.test.mjs && node tests/strike-animation.test.mjs && node tests/i18n.test.mjs && node tests/ui.test.mjs && node tests/loadout-ui.test.mjs && node tests/long-session-ui.test.mjs && node tests/hookset-ui.test.mjs && node tests/preset-controls.test.mjs && node tests/rod-workbench.test.mjs && node tests/catch-sort.test.mjs && node tests/statistics-ui.test.mjs && node tests/catch-sorting-ui.test.mjs && node tests/packing-costs-ui.test.mjs && node tests/new-player-path.test.mjs && node tests/bycatch.test.mjs && node tests/bycatch-ui.test.mjs && node tests/water-panels-ui.test.mjs && node tests/save-updates.test.mjs",
+    "check": "node --check dist/engine.js && node --check dist/app.js && node --check dist/forecast.js && node --check dist/journal.js && node --check dist/angling-visuals.js && node --check dist/angling-ui.js && node --check dist/session-ui.js && node --check dist/bite-audio.js && node --check dist/game-view.js && node --check dist/fishing-scene.js && node --check dist/inline-catches.js && node --check dist/session-planner.js && node --check dist/rig-presets.js && node --check dist/loadout-ui.js && node --check dist/i18n.js && node --check dist/i18n-data.js && node --check dist/economy.js && node --check dist/save-codec.js && node --check dist/catch-sort.js && node --check dist/packing-list.js && node --check dist/catch-model.js && node --check dist/art.js && node --check dist/water-panels.js && node --check dist/training.js && node --check dist/tackle.js && node --check dist/assembly-ui.js && node --check dist/save-store.js && node --check dist/updates.js",
+    "test:release": "npm run build && npm run build:web && node tests/standalone.test.mjs && node tests/web-release.test.mjs",
+    "build:web": "node scripts/build-web.mjs",
+    "build:workers": "npm run build:web && node scripts/build-workers.mjs",
+    "build:cloudflare": "npm run check && npm test && npm run test:release"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "jsdom": "26.0.0"
+  }
+}

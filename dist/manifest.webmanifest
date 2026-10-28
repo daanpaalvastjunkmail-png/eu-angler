@@ -1,0 +1,27 @@
+{
+  "id": "europa-angler-idle",
+  "name": "Europa Angler \u2014 Fishing Idle",
+  "short_name": "Angler Idle",
+  "lang": "en",
+  "description": "Build your fishing empire, one catch at a time.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f1b14",
+  "theme_color": "#101e17",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

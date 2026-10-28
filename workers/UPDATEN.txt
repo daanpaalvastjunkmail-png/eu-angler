@@ -1,0 +1,64 @@
+EUROPA ANGLER 3.0.0 — JOUW BESTAANDE CLOUDFLARE WORKER UPDATEN
+
+Vast speladres:
+https://europa-angler.daanpaalvastjunkmail.workers.dev/
+
+Dit adres hoort bij Cloudflare Workers. Werk de bestaande Worker europa-angler
+bij in hetzelfde Cloudflare-account. Maak hiervoor geen nieuw Pages-project.
+Het eerder geleverde Pages-stappenplan is voor jouw adres niet de juiste route.
+
+EERST JE SAVE
+Open op je telefoon dit vaste adres en download in Settings / Instellingen je
+JSON-save. Je voortgang staat in die telefoonbrowser, niet in Cloudflare.
+Bijwerken op hetzelfde adres en browserprofiel gebruikt dezelfde lokale opslag.
+Wissen van websitegegevens of wisselen van apparaat vraagt een JSON-back-up.
+
+UPDATEPAKKET VIA JE PC
+Dit pakket bevat de complete, gebouwde game in public/ en een configuratie
+met de bestaande Worker-naam europa-angler. Er is geen game-build nodig.
+
+1. Pak Europa-Angler-Workers-update.zip uit in een map op je pc.
+2. Gebruik een actuele Node.js LTS-installatie met npm.
+3. Open een terminal in die uitgepakte map (naast wrangler.json).
+4. Meld je aan met het Cloudflare-account van het bestaande spel:
+
+   npx wrangler@4 login
+
+5. Publiceer de update van de bestaande Worker:
+
+   npx wrangler@4 deploy --config wrangler.json
+
+   Als Cloudflare om een accountkeuze vraagt, kies het account waarin
+   europa-angler.daanpaalvastjunkmail.workers.dev al bestaat.
+   De configuratie gebruikt de Worker-naam europa-angler, zodat je dezelfde
+   Worker bijwerkt. Bij succes toont Wrangler het gepubliceerde adres.
+
+Deze stappen publiceren de complete statische game op de bestaande Worker.
+Vanuit Codex is nog geen deployment naar jouw Cloudflare-account uitgevoerd.
+De huidige live versie kon vanuit deze omgeving niet worden opgehaald.
+
+NA HET UPDATEN OP JE TELEFOON
+Open weer hetzelfde vaste speladres. Verschijnt Save & update / Opslaan &
+bijwerken, tik daarop. De game slaat eerst op en activeert daarna de update.
+Nog de oude versie in beeld? Sluit alle speltabbladen en de geïnstalleerde app
+en open hetzelfde adres opnieuw terwijl je internet hebt. Wis geen sitegegevens.
+In Settings / Instellingen staat de versie bij App updates & recovery.
+
+De nieuwe game zet bestaande idle-saves automatisch om en houdt de oude
+opslag intact. Geld, XP, vangsten, passen, lopende sessies en eigendommen
+blijven behouden. Ontwerpen zonder voldoende vrije hengels/molens blijven
+als Awaiting assembly / Nog te bouwen bewaard. Er is nog geen cloudsave.
+
+LATERE UPDATES
+Gebruik steeds deze Worker-naam, hetzelfde Cloudflare-account en hetzelfde
+vaste speladres. Publiceer alleen in de live omgeving voor je gewone spel;
+een apart preview-adres heeft eigen browseropslag.
+
+In Cloudflare vind je je Worker via Workers & Pages > europa-angler.
+Onder Deployments kun je de gepubliceerde versies bekijken.
+
+Bronnen:
+https://developers.cloudflare.com/workers/static-assets/get-started/
+https://developers.cloudflare.com/workers/wrangler/configuration/#assets
+https://developers.cloudflare.com/workers/versions-and-deployments/
+https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage

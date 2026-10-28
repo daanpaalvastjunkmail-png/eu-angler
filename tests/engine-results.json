@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "groups": 13,
+  "checks": [
+    "Planned license + feed estimate, actual 15-minute session, consumption, catches, XP and sales",
+    "Save/reload and import validation preserve state without duplicate offline rewards",
+    "One offline block and 900 live ticks produce identical catches, XP and consumption",
+    "24-hour absence processes only the 8-hour cap, respects session end and cannot replay rewards",
+    "Expired licenses and exhausted feed stop sessions safely",
+    "Rod slot gates, owned rod/reel quantities, style caps and multi-rod supply calculation",
+    "All six progressively gated rod slots and the level-300 cap",
+    "Concurrent rig crafting and fishing, upfront material accounting, skill XP and rig sale profit",
+    "Computer tournament scoring, timed results and one-time prize collection",
+    "Own lake purchase, real stocking, six-hour breeding, visitors and income collection",
+    "Multiple boats, rental income, fuel payment, completed fishing voyage, XP and fleet cash",
+    "Sea fishing requires a matching loadout and includes a charter when no owned boat is free",
+    "Prestige resets the stated resources while preserving property, records and craftsmanship; points spend once"
+  ],
+  "starter15m": {
+    "catches": 17,
+    "xp": 263,
+    "level": 2
+  },
+  "xpLevel300": 533379439
+}

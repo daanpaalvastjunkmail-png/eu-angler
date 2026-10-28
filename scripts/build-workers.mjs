@@ -1,0 +1,11 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const out=path.join(root,'build','workers');
+await fs.access(path.join(root,'build','web','index.html'));
+await fs.rm(out,{recursive:true,force:true});await fs.mkdir(out,{recursive:true});
+await fs.cp(path.join(root,'build','web'),path.join(out,'public'),{recursive:true});
+await fs.copyFile(path.join(root,'workers','wrangler.json'),path.join(out,'wrangler.json'));
+await fs.copyFile(path.join(root,'workers','UPDATEN.txt'),path.join(out,'UPDATEN.txt'));
+console.log(`Worker update package prepared: ${out}`);
