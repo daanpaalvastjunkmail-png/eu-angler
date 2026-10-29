@@ -2,7 +2,8 @@
   "status": "PASS",
   "scope": "Actual self-contained release file evaluated from file: origin; no module replacement or world stubs",
   "checks": [
-    "Inline JS and fonts are embedded",
+    "Inline JS, fonts and all four landscape images are embedded",
+    "The new field guide lists 55 entries; live search, group filters, water links and discovery cards work without DOM errors",
     "English is the default; topbar switches Dutch/English/Dutch without changing money, level or catches",
     "Individual rods are chosen in the planner, physical presets are edited in the workshop and full-loadout/method selectors are absent",
     "Each equipped rod has its own live strike control; focus tabs are absent",
@@ -10,7 +11,7 @@
     "One duration slider updates labels, licence cost and supplies without replacing the control, with daily steps from two to seven days",
     "New games start with €150 and a cleanup click earns exactly ten cents",
     "A complete session catches fish and ends",
-    "All eleven additional pages navigate without errors",
+    "All twelve additional pages navigate without errors",
     "Direct catch ledger defaults to sales without automatic payout; deselect all clears choices and blocks checkout without losing fish or paying money",
     "Weight sorting works in both directions in the release without replacing the fishing scene or changing choices and money",
     "Bulk release and mandatory processing preserve catch history"

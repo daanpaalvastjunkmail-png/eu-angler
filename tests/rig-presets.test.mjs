@@ -1,3 +1,4 @@
+import {SCHEMA_VERSION} from '../dist/tackle.js';
 import assert from 'node:assert/strict';
 import {IdleGame,starterRod,xpAt} from '../dist/engine.js';
 import {GEAR} from '../dist/data.js';
@@ -7,7 +8,7 @@ import {assembleRods,memoryStorage} from './tackle-fixtures.mjs';
 const checks=[],clone=structuredClone;
 function setup(level=1){let now=1800000000000;const storage=memoryStorage(),g=new IdleGame({storage,now:()=>now});g.state.xp=xpAt(level);g.state.money=1e6;return {g,storage,advance:s=>{now+=s*1000;g.advanceTo(now);},now:()=>now};}
 {
- const {g}=setup();assert.equal(g.state.settings.language,'en');assert.equal(g.state.schemaVersion,4);assert.equal(g.state.rodPresets.length,3);const ids=g.state.rodPresets.flatMap(p=>Object.values(p.items));assert.equal(new Set(ids).size,ids.length);assert(g.state.rodPresets.every(p=>!assemblyError(g.state,p)));assert.equal(g.state.tackleItems.filter(i=>i.starter&&GEAR.find(g=>g.id===i.gearId).category==='rod').length,3);
+ const {g}=setup();assert.equal(g.state.settings.language,'en');assert.equal(g.state.schemaVersion,SCHEMA_VERSION);assert.equal(g.state.rodPresets.length,3);const ids=g.state.rodPresets.flatMap(p=>Object.values(p.items));assert.equal(new Set(ids).size,ids.length);assert(g.state.rodPresets.every(p=>!assemblyError(g.state,p)));assert.equal(g.state.tackleItems.filter(i=>i.starter&&GEAR.find(g=>g.id===i.gearId).category==='rod').length,3);
  const before=clone(g.state);assert(!g.saveRodPreset(null,'Duplicate',starterRod('feeder')).ok);assert.deepEqual(g.state,before);assert(!g.saveRodPreset('missing','Missing',starterRod('feeder')).ok);
  checks.push('Three starter assemblies have exclusive component units; building with occupied parts fails atomically');
 }

@@ -24,7 +24,7 @@ const sessionFor=phases=>({rods:phases.map(phase=>({phase}))});
   const dom=new JSDOM(fishingView(game)),document=dom.window.document,view=document.querySelector('#fishing-game');
   const lines=[...view.querySelectorAll('[data-scene-line]')],controls=[...view.querySelectorAll('.scene-rod-control')];
   assert.equal(lines.length,count);assert.equal(controls.length,count);
-  assert.equal(view.querySelector('#scene-foreground').getAttribute('preserveAspectRatio'),'xMidYMid meet','The camera must not crop the side rods');
+  assert.equal(view.querySelector('#scene-foreground').getAttribute('preserveAspectRatio'),'xMidYMax meet','The camera must not crop the side rods');
   assert(!view.querySelector('[data-focus-line],#scene-strike-hud'),'All rods have their own controls rather than a selected-rod switch');
   for(let index=0;index<count;index++){
    assert.equal(lines[index].dataset.sceneLine,String(index));

@@ -1,15 +1,15 @@
 {
   "id": "europa-angler-idle",
-  "name": "Europa Angler \u2014 Fishing Idle",
-  "short_name": "Angler Idle",
+  "name": "Europa Angler — Atelier Edition",
+  "short_name": "Angler Atelier",
   "lang": "en",
-  "description": "Build your fishing empire, one catch at a time.",
+  "description": "An illustrated fishing journal. Discover European waters, build your rods and collect new catches.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0f1b14",
-  "theme_color": "#101e17",
+  "background_color": "#0c1929",
+  "theme_color": "#101f32",
   "icons": [
     {
       "src": "icon-192.png",

@@ -1,3 +1,5 @@
+import {speciesArt} from './species-art.js';
+import {landscapeFor} from './atelier-assets.js';
 let artSequence = 0;
 const tint = (value, fallback) => /^#[0-9a-f]{3,8}$/i.test(String(value)) ? value : fallback;
 const svg = (viewBox, body, label) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" role="img" aria-label="${label}" fill="none">${body}</svg>`;
@@ -6,12 +8,13 @@ const line = (d, color = '#c2b894', width = 1, extra = '') => `<path d="${d}" st
 export function gearArt(category, tier = 'start', style = 'feeder') {
   const id = `gear-${++artSequence}`;
   const advanced = /pro|elite|master|legend|premium|expert|carbon/i.test(String(tier));
-  const copper = advanced ? '#d4aa63' : '#b49b71';
-  const graphite = advanced ? '#454f47' : '#56604c';
-  const defs = `<defs><linearGradient id="${id}-metal" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#e1dcc3"/><stop offset=".35" stop-color="#8d957f"/><stop offset=".65" stop-color="#c1c7af"/><stop offset="1" stop-color="#515e51"/></linearGradient><linearGradient id="${id}-fabric" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8a936a"/><stop offset="1" stop-color="#424f37"/></linearGradient></defs>`;
+  const copper = advanced ? '#e7bb70' : '#bc8460';
+  const graphite = advanced ? '#243d51' : '#456472';
+  const textile = {feeder:['#63928a','#294f54'],karper:['#af8960','#5f483a'],dobber:['#7191b1','#344c71'],zee:['#7597a9','#243f60']}[style] || ['#63928a','#294f54'];
+  const defs = `<defs><linearGradient id="${id}-metal" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#f1e9d2"/><stop offset=".35" stop-color="#708c98"/><stop offset=".65" stop-color="#d0d9da"/><stop offset="1" stop-color="#314d61"/></linearGradient><linearGradient id="${id}-fabric" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${textile[0]}"/><stop offset="1" stop-color="${textile[1]}"/></linearGradient></defs>`;
   const metal = `url(#${id}-metal)`;
   const fabric = `url(#${id}-fabric)`;
-  const base = `<ellipse cx="163" cy="122" rx="87" ry="6" fill="#09160f" opacity=".32"/>`;
+  const base = `<path d="M45 119H278" stroke="#9bb0b9" stroke-width=".5" opacity=".22"/><ellipse cx="163" cy="122" rx="87" ry="6" fill="#0b2537" opacity=".14"/>`;
   let body = '';
   if (category === 'rod') {
     body = `<g transform="rotate(-14 160 70)">
@@ -21,7 +24,7 @@ export function gearArt(category, tier = 'start', style = 'feeder') {
       <path d="M 99 70 l 25 -2 1 10 -25 2 Z" fill="#25362c" stroke="${copper}"/>
       ${line('M 105 70 l 1 8 M 119 68 l 1 9', '#c7cab6', 1.5)}
       <path d="M 112 79 l 4 13 13 2 7 -8 -4 -9" stroke="${copper}" stroke-width="2"/>
-      <ellipse cx="124" cy="95" rx="9" ry="7" fill="${metal}"/><path d="M 118 89 l 13 2 -2 10 -13 -2 Z" fill="#5f6a54" stroke="${copper}"/>
+      <ellipse cx="124" cy="95" rx="9" ry="7" fill="${metal}"/><path d="M 118 89 l 13 2 -2 10 -13 -2 Z" fill="#577483" stroke="${copper}"/>
       ${line('M 130 96 l 10 6 7 -3', '#bbbea5', 1.8)}<ellipse cx="148" cy="98" rx="4" ry="2" fill="${copper}"/>
       ${[145,180,212,239,261,277].map((x,n)=>`<path d="M ${x} ${69-(x-145)*.085} l 3 6 3 -6" stroke="${copper}" stroke-width=".8"/><ellipse cx="${x+3}" cy="${76-(x-145)*.085}" rx="${3-n*.32}" ry="${1.8-n*.13}" stroke="#b4bea5" stroke-width=".7"/>`).join('')}
       ${line('M 122 95 Q 174 75 280 65', '#e0d5b2', .45, 'opacity=".6"')}
@@ -31,13 +34,13 @@ export function gearArt(category, tier = 'start', style = 'feeder') {
   } else if (category === 'reel') {
     body = `<g transform="translate(4 -5)"><path d="M 151 43 L 160 22 181 22" stroke="${metal}" stroke-width="8" stroke-linecap="round"/><path d="M 175 18 h 37 v 7 h -37 Z" fill="${graphite}" stroke="${copper}"/>
       <path d="M 137 49 Q 162 39 180 51 L 190 82 Q 178 105 156 104 L 137 83 Z" fill="${fabric}" stroke="#afba98" stroke-width="1.2"/>
-      <path d="M 145 55 Q 160 48 174 56 L 181 78 166 91 149 86 Z" fill="#374538" stroke="#818d71"/>
-      <circle cx="163" cy="73" r="13" fill="${metal}"/><circle cx="163" cy="73" r="8" fill="#3d4b3b" stroke="${copper}"/><circle cx="163" cy="73" r="3" fill="${copper}"/>
+      <path d="M 145 55 Q 160 48 174 56 L 181 78 166 91 149 86 Z" fill="#283f50" stroke="#818d71"/>
+      <circle cx="163" cy="73" r="13" fill="${metal}"/><circle cx="163" cy="73" r="8" fill="#223e4f" stroke="${copper}"/><circle cx="163" cy="73" r="3" fill="${copper}"/>
       <path d="M 137 56 C 109 40 99 48 101 75" stroke="${metal}" stroke-width="3"/>
       <ellipse cx="121" cy="63" rx="23" ry="16" fill="${metal}" stroke="#d1d7bc"/><path d="M 98 62 L 100 90 Q 120 104 143 88 L 144 62" fill="#727b61" stroke="${copper}"/>
       ${Array.from({length:7},(_,n)=>line(`M 100 ${65+n*3} Q 119 ${79+n*3} 142 ${65+n*3}`,n%2?'#b8bca1':'#4f5e49',1)).join('')}
-      <ellipse cx="121" cy="61" rx="23" ry="14" fill="${metal}" stroke="${copper}"/><ellipse cx="121" cy="61" rx="15" ry="8" fill="#455240" stroke="#d3c9a3"/><ellipse cx="121" cy="61" rx="7" ry="4" fill="#b9bd9f"/>
-      <path d="M 171 77 L 203 92 220 83" stroke="${metal}" stroke-width="4" stroke-linecap="round"/><rect x="213" y="73" width="23" height="13" rx="6.5" fill="#434d38" stroke="${copper}" transform="rotate(-24 224 80)"/>
+      <ellipse cx="121" cy="61" rx="23" ry="14" fill="${metal}" stroke="${copper}"/><ellipse cx="121" cy="61" rx="15" ry="8" fill="#2b5260" stroke="#d3c9a3"/><ellipse cx="121" cy="61" rx="7" ry="4" fill="#b9bd9f"/>
+      <path d="M 171 77 L 203 92 220 83" stroke="${metal}" stroke-width="4" stroke-linecap="round"/><rect x="213" y="73" width="23" height="13" rx="6.5" fill="#294654" stroke="${copper}" transform="rotate(-24 224 80)"/>
       <path d="M 99 75 C 89 34 142 26 149 62" stroke="#dce0c8" stroke-width="1.5"/>
     </g>`;
   } else if (category === 'line') {
@@ -61,11 +64,17 @@ export function gearArt(category, tier = 'start', style = 'feeder') {
   } else if (category === 'boots') {
     body = `<g transform="rotate(-8 127 70)"><path d="M 103 25 L 143 25 141 85 157 97 Q 163 107 154 115 H 94 Q 85 105 91 96 L 99 84 Z" fill="${fabric}" stroke="#b1ba91"/><path d="M 100 25 Q 120 33 143 25 L 143 36 Q 120 44 100 36 Z" fill="#a2a67d"/><path d="M 89 105 Q 118 113 159 105 V 116 H 92 Z" fill="#27382a" stroke="#8c9674"/><path d="M 107 43 L 105 83 117 91 M 101 96 Q 122 87 143 96" stroke="#b3b18c" stroke-width="1"/>${[98,108,118,128,138,148].map(x=>line(`M ${x} 111 v 5`,'#a3ab88',1)).join('')}</g><g transform="translate(55 -4) rotate(6 127 70)"><path d="M 103 25 L 143 25 141 85 157 97 Q 163 107 154 115 H 94 Q 85 105 91 96 L 99 84 Z" fill="${fabric}" stroke="#b1ba91"/><path d="M 100 25 Q 120 33 143 25 L 143 36 Q 120 44 100 36 Z" fill="#a2a67d"/><path d="M 89 105 Q 118 113 159 105 V 116 H 92 Z" fill="#27382a" stroke="#8c9674"/><path d="M 107 43 L 105 83 117 91 M 101 96 Q 122 87 143 96" stroke="#b3b18c" stroke-width="1"/></g>`;
   } else if (category === 'bag') {
-    body = `<path d="M 137 44 V 31 Q 159 15 181 31 V 44" stroke="#a5a781" stroke-width="7"/><path d="M 111 41 Q 159 29 208 42 L 224 102 Q 161 126 98 106 Z" fill="${fabric}" stroke="#bac09a"/><path d="M 110 41 L 98 106 119 111 128 44 Z" fill="#485e40"/><path d="M 108 50 Q 160 37 210 51 M 107 57 Q 160 44 211 58" stroke="#ccbf97" stroke-width="1"/><path d="M 135 68 Q 166 59 198 69 L 203 99 Q 167 112 131 102 Z" fill="#62774e" stroke="#acb18b"/><path d="M 137 76 Q 166 67 199 76" stroke="#d0c59b" stroke-width="1"/><path d="M 127 42 L 126 108 M 194 41 L 210 108" stroke="#283d2b" stroke-width="7"/><rect x="122" y="60" width="10" height="14" rx="1" fill="#9da582" stroke="#d1caa7"/><rect x="193" y="58" width="10" height="14" rx="1" fill="#9da582" stroke="#d1caa7" transform="rotate(-9 198 65)"/><path d="M 104 66 Q 78 48 66 80 Q 62 99 101 99" stroke="#7b8965" stroke-width="6"/><rect x="152" y="83" width="28" height="11" rx="2" fill="#b3a47b"/><path d="M 159 89 l 6 -3 7 3" stroke="#485e40" stroke-width="1.4"/>`;
+    body = `<path d="M 137 44 V 31 Q 159 15 181 31 V 44" stroke="#a5a781" stroke-width="7"/><path d="M 111 41 Q 159 29 208 42 L 224 102 Q 161 126 98 106 Z" fill="${fabric}" stroke="#bac09a"/><path d="M 110 41 L 98 106 119 111 128 44 Z" fill="#335b64"/><path d="M 108 50 Q 160 37 210 51 M 107 57 Q 160 44 211 58" stroke="#ccbf97" stroke-width="1"/><path d="M 135 68 Q 166 59 198 69 L 203 99 Q 167 112 131 102 Z" fill="#518581" stroke="#acb18b"/><path d="M 137 76 Q 166 67 199 76" stroke="#d0c59b" stroke-width="1"/><path d="M 127 42 L 126 108 M 194 41 L 210 108" stroke="#283d2b" stroke-width="7"/><rect x="122" y="60" width="10" height="14" rx="1" fill="#8fa9b1" stroke="#d1caa7"/><rect x="193" y="58" width="10" height="14" rx="1" fill="#8fa9b1" stroke="#d1caa7" transform="rotate(-9 198 65)"/><path d="M 104 66 Q 78 48 66 80 Q 62 99 101 99" stroke="#7b8965" stroke-width="6"/><rect x="152" y="83" width="28" height="11" rx="2" fill="#b3a47b"/><path d="M 159 89 l 6 -3 7 3" stroke="#335b64" stroke-width="1.4"/>`;
   } else if (category === 'chair') {
-    body = `<path d="M 117 28 L 110 90 193 119 M 194 28 L 204 90 120 119 M 109 75 L 109 112 M 205 75 L 205 112" stroke="${metal}" stroke-width="4" stroke-linecap="round"/><path d="M 119 29 Q 157 20 192 29 L 192 76 Q 155 89 114 77 Z" fill="${fabric}" stroke="#bcc199"/><path d="M 119 35 Q 157 27 188 35 L 187 69 Q 155 82 119 71 Z" stroke="#abb48a" stroke-width=".8"/><path d="M 114 79 L 99 94 Q 156 111 215 94 L 193 78 Q 156 89 114 79" fill="#6e7e58" stroke="#bdc198"/><path d="M 106 61 L 95 81 118 87 M 198 61 L 221 81 196 88" stroke="${metal}" stroke-width="3"/><path d="M 100 70 L 119 76 M 203 70 L 219 77" stroke="#9c9975" stroke-width="7" stroke-linecap="round"/><path d="M 102 114 h 15 M 197 114 h 15 M 113 121 h 15 M 186 121 h 15" stroke="#a1aa8e" stroke-width="3" stroke-linecap="round"/>`;
+    body = `<path d="M 117 28 L 110 90 193 119 M 194 28 L 204 90 120 119 M 109 75 L 109 112 M 205 75 L 205 112" stroke="${metal}" stroke-width="4" stroke-linecap="round"/><path d="M 119 29 Q 157 20 192 29 L 192 76 Q 155 89 114 77 Z" fill="${fabric}" stroke="#bcc199"/><path d="M 119 35 Q 157 27 188 35 L 187 69 Q 155 82 119 71 Z" stroke="#abb48a" stroke-width=".8"/><path d="M 114 79 L 99 94 Q 156 111 215 94 L 193 78 Q 156 89 114 79" fill="#6b9191" stroke="#bdc198"/><path d="M 106 61 L 95 81 118 87 M 198 61 L 221 81 196 88" stroke="${metal}" stroke-width="3"/><path d="M 100 70 L 119 76 M 203 70 L 219 77" stroke="#9c9975" stroke-width="7" stroke-linecap="round"/><path d="M 102 114 h 15 M 197 114 h 15 M 113 121 h 15 M 186 121 h 15" stroke="#a1aa8e" stroke-width="3" stroke-linecap="round"/>`;
   } else {
     body = `<path d="M 105 44 h 110 v 62 H 105 Z" fill="${fabric}" stroke="#aeb695"/><path d="M 105 66 h 110 M 126 44 v 62 M 194 44 v 62" stroke="${copper}"/><path d="M 139 44 V 32 h 42 v 12" stroke="#aeb695" stroke-width="4"/><rect x="151" y="60" width="18" height="13" rx="2" fill="${metal}"/>`;
+  }
+  if(category==='terminal' && ['karper','zee'].includes(style)) {
+    body=`<path d="M148 15V35" stroke="${metal}" stroke-width="2"/><ellipse cx="148" cy="18" rx="4" ry="6" stroke="${copper}" stroke-width="1.5"/><path d="M146 30C139 49 111 76 120 96Q148 120 176 96C185 76 157 49 150 30Z" fill="${metal}" stroke="#425e66" stroke-width="1.5"/><path d="M142 39Q125 74 127 89" stroke="#d2d9c7" stroke-width="2" opacity=".7"/><path d="M148 17C187 8 206 33 195 56C185 77 214 83 224 104" fill="none" stroke="#c2b28e" stroke-width="1.2"/><path d="M224 104v13q2 14 14 8q8-5 3-15l-5 8" fill="none" stroke="${metal}" stroke-width="2"/><path d="M225 104q-8 9-2 24" stroke="#a78f65" stroke-width=".7"/><circle cx="224" cy="129" r="6" fill="#c58d5a" stroke="#e0bf88" stroke-width=".6"/><path d="M124 101Q149 112 173 100" stroke="#334d5b" stroke-width=".9"/>`;
+  }
+  if(category==='indicator') {
+    body=style==='dobber'?`<path d="M159 19V121" stroke="#a8b8b5" stroke-width="1.2"/><path d="M156 22H162V49H156Z" fill="#f0a55b"/><path d="M156 35H162V40H156Z" fill="#fff1cf"/><path d="M159 49C143 60 143 79 159 88C175 79 175 60 159 49Z" fill="${fabric}" stroke="${copper}"/><path d="M149 67H169" stroke="#dcd1a8" stroke-width="2"/>`:style==='feeder'?`<path d="M140 46L158 32 176 46" fill="none" stroke="${metal}" stroke-width="4"/><path d="M156 33V17H163V34" fill="#557582" stroke="${copper}"/><path d="M137 49Q114 51 116 78L110 88H153L148 78Q149 53 137 49M180 49Q157 51 160 78L154 88H197L191 78Q192 53 180 49" fill="${metal}" stroke="${copper}"/><path d="M130 54Q121 65 123 76M172 54Q164 65 166 76" stroke="#e5e3cf" stroke-width="1.7"/><circle cx="132" cy="91" r="4" fill="${copper}"/><circle cx="176" cy="91" r="4" fill="${copper}"/>`:`<path d="M135 32H184L193 49V98H126V49Z" fill="${fabric}" stroke="${copper}" stroke-width="1.5"/><path d="M148 32V21M172 32V21" stroke="${metal}" stroke-width="7" stroke-linecap="round"/><path d="M151 23Q159 36 170 23" stroke="#0e2d3c" stroke-width="4"/><circle cx="160" cy="49" r="4" fill="#8fdddd"/><circle cx="160" cy="49" r="9" fill="#8fdddd" opacity=".12"/><circle cx="160" cy="73" r="12" fill="#223f50" stroke="#89a6ac"/>${[0,1,2,3].map(n=>`<path d="M152 ${67+n*4}H168" stroke="#a5bcc0" stroke-width="1"/>`).join('')}<path d="M154 99V123H165V99" fill="${metal}"/><path d="M155 105H164M155 110H164M155 115H164" stroke="#617c87"/>`;
   }
   return svg('0 0 320 140', defs + base + body, 'Visuitrusting');
 }
@@ -118,66 +127,44 @@ export function crayfishArt(color = '#b88062') {
 }
 
 export function catchArt(species) {
-  return species?.kind==='crayfish'?crayfishArt(species.color):fishArt(species?.color);
+  return species?.kind==='crayfish'?crayfishArt(species.color):species?.id?speciesArt(species):fishArt(species?.color);
 }
 
 export function waterArt(id, color) {
-  const key = String(id || 'meer');
-  let seed = 2166136261;
-  for (let n = 0; n < key.length; n++) seed = Math.imul(seed ^ key.charCodeAt(n), 16777619) >>> 0;
-  const random = () => { seed = (Math.imul(seed, 1664525)+1013904223)>>>0; return seed/4294967296; };
-  const palette = tint(color, '#5e8478');
-  const variant = seed % 3;
-  const shapes = [
-    'M 112 39 C 150 19 183 35 208 29 C 238 20 250 45 275 51 C 317 62 326 99 296 121 C 268 137 241 121 217 138 C 194 155 162 139 141 125 C 123 115 87 112 91 88 C 94 67 86 52 112 39 Z',
-    'M 125 31 C 154 24 174 47 185 64 C 199 82 209 57 227 43 C 249 23 289 36 294 59 C 299 83 268 90 261 111 C 251 142 217 149 192 133 C 165 116 140 130 116 113 C 89 95 105 79 105 58 C 103 43 112 35 125 31 Z',
-    'M 92 69 C 101 37 135 43 161 32 C 193 17 231 32 250 52 C 269 73 307 66 316 92 C 322 117 296 143 262 137 C 232 132 210 146 185 134 C 160 121 162 98 137 102 C 106 110 82 96 92 69 Z'
-  ];
-  const lake = shapes[variant];
-  const artId = `water-${++artSequence}`;
-  const trees = Array.from({length:100},()=>{
-    const x=12+random()*376,y=9+random()*162;
-    const dx=(x-201)/127,dy=(y-87)/66;
-    if(dx*dx+dy*dy<1.22) return '';
-    const r=2+random()*4.5;
-    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${random()>.5?'#72896b':'#899b75'}" opacity=".6"/><circle cx="${(x-.8).toFixed(1)}" cy="${(y-1).toFixed(1)}" r="${(r*.6).toFixed(1)}" fill="#b0bb8b" opacity=".45"/>`;
-  }).join('');
-  return svg('0 0 400 180', `<defs><pattern id="${artId}-grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M 25 0 H 0 V 25" stroke="#657b65" opacity=".12" stroke-width=".5"/></pattern><clipPath id="${artId}-lake"><path d="${lake}"/></clipPath></defs>
-    <rect width="400" height="180" fill="#bdc5a1"/><rect width="400" height="180" fill="url(#${artId}-grid)"/>
-    ${[1.25,1.48,1.74,2.04].map((scale,n)=>`<path d="${lake}" transform="translate(${200-200*scale} ${90-90*scale}) scale(${scale})" stroke="#849779" stroke-width=".65" opacity="${.55-n*.08}"/>`).join('')}
-    <path d="M -10 141 Q 62 142 76 101 T 126 17 M 66 181 Q 78 148 133 146 T 249 159 Q 315 171 345 123 T 410 110" stroke="#e9dfbc" stroke-width="5"/><path d="M -10 141 Q 62 142 76 101 T 126 17 M 66 181 Q 78 148 133 146 T 249 159 Q 315 171 345 123 T 410 110" stroke="#a99f7b" stroke-width=".6" stroke-dasharray="3 3"/>
-    ${trees}<path d="${lake}" fill="${palette}" stroke="#e1d9b1" stroke-width="3"/>
-    <g clip-path="url(#${artId}-lake)">${[.85,.64,.43].map((scale,n)=>`<path d="${lake}" transform="translate(${200-200*scale} ${90-90*scale}) scale(${scale})" stroke="#b7d1b7" stroke-width=".65" opacity="${.5-n*.1}"/>`).join('')}<path d="M 80 86 Q 161 74 220 89 T 319 80 M 72 102 Q 156 90 218 105 T 330 94" stroke="#bdd1b8" stroke-width=".45" opacity=".3"/></g>
-    <path d="M 131 131 L 143 115" stroke="#b9a77c" stroke-width="5"/><path d="M 130 129 L 140 137 M 133 125 L 143 132 M 136 121 L 146 128" stroke="#e6d8af" stroke-width=".8"/>
-    <circle cx="140" cy="122" r="8" fill="#233d30" stroke="#e5d7ac" stroke-width="1.5"/><circle cx="140" cy="122" r="2.7" fill="#d7be7b"/>
-    <path d="M 33 36 V 17 L 28 26 M 33 17 L 38 26" stroke="#425f4a" stroke-width="1"/><text x="33" y="12" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#425f4a">N</text>
-    <path d="M 336 156 h 42 M 336 153 v 6 M 357 153 v 6 M 378 153 v 6" stroke="#4d6951" stroke-width="1"/><text x="357" y="169" text-anchor="middle" font-family="sans-serif" font-size="6" letter-spacing="1" fill="#4d6951">200 M</text>`, 'Kaart van het viswater');
+  const key=String(id||'rietplas'), landscape=landscapeFor(key), artId=`water-${++artSequence}`;
+  const coast=['noordzee','lofoten','azoren','pelagic'].includes(key), accent=coast?'#91c4d3':'#d9b781';
+  const alignment=key==='lumiere'?'xMaxYMid':key==='rhein'?'xMinYMid':'xMidYMid';
+  return svg('0 0 400 180', `<defs><linearGradient id="${artId}-shade" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#102e40" stop-opacity=".12"/><stop offset=".58" stop-color="#102e40" stop-opacity="0"/><stop offset="1" stop-color="#102e40" stop-opacity=".72"/></linearGradient><linearGradient id="${artId}-sky" x2="0" y2="1"><stop stop-color="#b2c9d2"/><stop offset="1" stop-color="${tint(color,'#497e84')}"/></linearGradient></defs>
+  <rect width="400" height="180" fill="url(#${artId}-sky)"/><image class="water-landscape" href="${landscape.src}" width="400" height="180" preserveAspectRatio="${alignment} slice"/><rect width="400" height="180" fill="url(#${artId}-shade)"/>
+  <path d="M16 31V16H31M369 16H384V31M384 149V164H369M31 164H16V149" stroke="#fff4d9" stroke-width=".8" opacity=".65"/>
+  <g transform="translate(367 39)" stroke="#fff4dc" fill="none" opacity=".9"><circle r="11" stroke-width=".5"/><path d="M0-17V15M-5-7L0-16 5-7" stroke-width=".8"/><circle r="2" fill="${accent}" stroke="none"/></g>
+  <g transform="translate(29 151)" stroke="#e9dfca" stroke-width=".7" opacity=".78"><path d="M0 0H48M0-3V3M24-3V3M48-3V3"/><path d="M65-3H93M65 1H82" opacity=".6"/></g>`,coast?'Zeegezicht van de visbestemming':'Landschap van het viswater');
 }
 
 export function avatarArt() {
   const id = `avatar-${++artSequence}`;
-  return svg('0 0 280 360', `<defs><linearGradient id="${id}-jacket" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a1ab78"/><stop offset="1" stop-color="#4d6346"/></linearGradient><linearGradient id="${id}-pants" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6d7760"/><stop offset="1" stop-color="#364b39"/></linearGradient></defs>
+  return svg('0 0 280 360', `<defs><linearGradient id="${id}-jacket" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b38964"/><stop offset="1" stop-color="#674e40"/></linearGradient><linearGradient id="${id}-pants" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#5d7a8a"/><stop offset="1" stop-color="#304959"/></linearGradient></defs>
     <ellipse cx="141" cy="336" rx="66" ry="11" fill="#0b1910" opacity=".45"/>
     <circle cx="141" cy="151" r="99" stroke="#81916b" stroke-width=".5" opacity=".2"/><circle cx="141" cy="151" r="115" stroke="#81916b" stroke-width=".5" stroke-dasharray="2 10" opacity=".2"/>
     <path d="M 81 332 L 67 302 M 73 317 L 62 313 M 77 325 L 86 311 M 207 334 L 219 308 M 212 324 L 226 320" stroke="#71825a" stroke-width="1.4"/>
     <path d="M 111 211 L 111 277 105 310 129 314 146 242 153 272 154 313 179 313 179 256 171 210 Z" fill="url(#${id}-pants)" stroke="#9ca880"/>
     <path d="M 143 218 L 146 242 M 121 232 L 119 271 M 165 231 L 169 272" stroke="#9ca480" stroke-width=".8"/>
-    <path d="M 107 284 L 132 285 128 318 132 332 Q 110 340 93 333 L 94 324 103 316 Z M 152 286 L 177 285 179 315 190 325 189 334 Q 170 340 152 333 L 155 319 Z" fill="#344a34" stroke="#a3af85"/>
+    <path d="M 107 284 L 132 285 128 318 132 332 Q 110 340 93 333 L 94 324 103 316 Z M 152 286 L 177 285 179 315 190 325 189 334 Q 170 340 152 333 L 155 319 Z" fill="#304958" stroke="#8babb3"/>
     <path d="M 107 288 L 131 289 M 153 289 L 177 288" stroke="#7c8b61" stroke-width="5"/><path d="M 94 332 Q 112 338 132 331 M 153 333 Q 171 339 190 332" stroke="#b7b899" stroke-width="2.5"/>
     <path d="M 117 97 Q 138 86 161 97 L 182 109 196 154 186 170 166 139 174 213 Q 143 230 106 213 L 113 139 94 172 78 158 97 111 Z" fill="url(#${id}-jacket)" stroke="#b1bc91"/>
     <path d="M 118 96 Q 141 110 162 96 L 155 116 141 125 124 116 Z" fill="#334e38" stroke="#9cac82"/>
     <path d="M 141 125 L 141 219" stroke="#d2c79e" stroke-width="1.2"/><path d="M 108 201 Q 140 214 172 201 M 115 111 L 126 128 M 166 112 L 156 129" stroke="#d1c59d" stroke-width=".7"/>
-    <path d="M 115 161 L 132 164 131 189 113 186 Z M 150 164 L 168 161 170 186 150 189 Z" fill="#61794e" stroke="#b0b78c"/><path d="M 115 165 L 131 168 M 151 168 L 168 165" stroke="#d1c59d" stroke-width=".9"/>
+    <path d="M 115 161 L 132 164 131 189 113 186 Z M 150 164 L 168 161 170 186 150 189 Z" fill="#826749" stroke="#b0b78c"/><path d="M 115 165 L 131 168 M 151 168 L 168 165" stroke="#d1c59d" stroke-width=".9"/>
     <rect x="150" y="136" width="15" height="9" rx="1" fill="#b6a878"/><path d="M 153 142 l 4 -3 5 3" stroke="#4c6642"/>
-    <path d="M 91 162 L 109 170 124 152 134 158 119 183 Q 110 191 99 182 L 79 170 Z" fill="#8a9b6a" stroke="#bac296"/>
-    <path d="M 188 153 L 174 166 157 153 149 163 170 183 Q 180 186 189 174 L 199 160 Z" fill="#748a5c" stroke="#b7c090"/>
+    <path d="M 91 162 L 109 170 124 152 134 158 119 183 Q 110 191 99 182 L 79 170 Z" fill="#a8835c" stroke="#bac296"/>
+    <path d="M 188 153 L 174 166 157 153 149 163 170 183 Q 180 186 189 174 L 199 160 Z" fill="#94724e" stroke="#b7c090"/>
     <path d="M 124 151 Q 131 141 137 144 L 143 150 138 159 130 162 Z M 155 151 Q 148 143 142 149 L 140 157 149 165 156 161 Z" fill="#c4aa82" stroke="#e2c69a" stroke-width=".6"/>
     <path d="M 126 84 L 126 103 Q 139 115 151 103 L 151 83" fill="#b49a74"/>
     <path d="M 120 57 Q 137 44 155 58 L 158 80 Q 151 99 138 101 Q 122 94 119 77 Z" fill="#c6ae86" stroke="#e1c89e" stroke-width=".6"/>
     <path d="M 120 71 L 123 87 Q 139 102 153 85 L 157 70 152 77 148 84 129 83 Z" fill="#695d43" opacity=".75"/>
     <path d="M 128 87 Q 138 93 148 87 M 136 72 L 133 81 139 82" stroke="#947c59" stroke-width=".9"/>
     <path d="M 122 70 L 133 69 M 143 69 L 154 70" stroke="#384735" stroke-width="2.4" stroke-linecap="round"/>
-    <path d="M 117 63 Q 111 39 136 35 Q 159 33 161 60 Z" fill="#6c8153" stroke="#b1ba89"/><path d="M 116 58 Q 140 54 161 59 L 174 65 Q 151 72 117 65 Z" fill="#435e3d" stroke="#a7b280"/><path d="M 134 36 Q 130 45 132 56 M 151 39 Q 155 46 155 56" stroke="#a3af7e" stroke-width=".7"/><rect x="137" y="45" width="12" height="7" rx="1" fill="#b6ad7c"/>
+    <path d="M 117 63 Q 111 39 136 35 Q 159 33 161 60 Z" fill="#4e7188" stroke="#b1ba89"/><path d="M 116 58 Q 140 54 161 59 L 174 65 Q 151 72 117 65 Z" fill="#314b61" stroke="#a7b280"/><path d="M 134 36 Q 130 45 132 56 M 151 39 Q 155 46 155 56" stroke="#a3af7e" stroke-width=".7"/><rect x="137" y="45" width="12" height="7" rx="1" fill="#b6ad7c"/>
     <path d="M 100 215 L 209 31" stroke="#182c20" stroke-width="4"/><path d="M 100 215 L 209 31" stroke="#b7b997" stroke-width="1.3"/><path d="M 103 210 L 128 167" stroke="#b79e70" stroke-width="5"/><path d="M 108 202 L 126 171" stroke="#4c563b" stroke-width=".8"/>
     <path d="M 131 162 L 137 168 132 180 123 178" stroke="#b3ba94" stroke-width="2"/><ellipse cx="132" cy="174" rx="6" ry="8" fill="#79866a" stroke="#d1c499"/><path d="M 137 176 L 145 180 148 175" stroke="#d1c499" stroke-width="1.3"/>
     <path d="M 156 120 l 5 3 2 -7 M 174 90 l 5 3 1 -6 M 190 63 l 4 2 1 -5 M 204 40 l 4 2 1 -5" stroke="#c0c6a7" stroke-width=".7"/><path d="M 211 32 Q 229 95 224 169" stroke="#d0d1b1" stroke-width=".5" opacity=".6"/>

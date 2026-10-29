@@ -1,4 +1,5 @@
 import {ENGLISH} from './i18n-data.js';
+import {ATELIER_ENGLISH} from './atelier-i18n.js';
 
 export const LANGUAGES=Object.freeze([{id:'en',name:'English'},{id:'nl',name:'Nederlands'}]);
 export const languageName=code=>LANGUAGES.find(language=>language.id===code)?.name||'English';
@@ -8,7 +9,7 @@ const excluded='script,style,noscript,textarea,code,[contenteditable]:not([conte
 const escaped=value=>value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 const isWord=value=>/[\p{L}\p{N}_]/u.test(value||'');
 const phrases=new Map();
-for(const [source,target]of Object.entries(ENGLISH)){
+for(const [source,target]of Object.entries({...ENGLISH,...ATELIER_ENGLISH})){
  phrases.set(source,target);
  if(source!==source.toUpperCase())phrases.set(source.toUpperCase(),target.toUpperCase());
 }

@@ -1,5 +1,5 @@
 import {GEAR,STYLES,WATERS} from './data.js';
-import {lakeScene} from './visuals.js';
+import {landscapeFor} from './atelier-assets.js';
 import {fishingForeground} from './fishing-scene.js';
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const get=(items,id)=>items.find(item=>item.id===id);
@@ -14,8 +14,8 @@ function rodControl(game,rod,index){
 
 export function fishingView(game,activeLine=0){
  const s=game.state,session=s.session,w=session?get(WATERS,session.water):game.water,loadout=session?.loadout||game.loadout,summary=session||s.lastSession;
- const background=lakeScene(w,0,!!session).replace('viewBox="0 0 900 390"','x="0" y="0" width="1200" height="600" viewBox="0 45 900 345" preserveAspectRatio="none"').replace('class="lake-illustration','class="lake-illustration game-background');
- return `<section class="panel game-view" id="fishing-game" aria-label="Interactieve visstek"><div class="scene game-scene" data-phase="waiting"><svg class="fishing-foreground-svg game-illustration" id="scene-foreground" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Al je hengels tegelijk aan de waterkant">${background}${fishingForeground(loadout.rods)}</svg><div class="scene-vignette" aria-hidden="true"></div>
+ const landscape=landscapeFor(w);
+ return `<section class="panel game-view" id="fishing-game" aria-label="Interactieve visstek"><div class="scene game-scene" data-phase="waiting"><img class="atelier-scene-background" src="${landscape.src}" alt="" style="object-position:${landscape.position}" decoding="async"><svg class="fishing-foreground-svg game-illustration" id="scene-foreground" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Al je hengels tegelijk aan de waterkant">${fishingForeground(loadout.rods)}</svg><div class="scene-vignette" aria-hidden="true"></div>
  <div class="game-scene-title"><span class="eyebrow">${esc(w.country.toUpperCase())} <span>·</span> ${esc(w.tag)}</span><h2>${esc(w.name)}</h2><p>${esc(w.region)}</p></div>
  <div class="scene-top-tools"><button class="scene-sound" data-action="toggle-audio"><span class="sound-status">Geluid inschakelen</span></button><span class="scene-weather">18° <i>·</i> <span data-live="sceneTime">07:24</span></span></div>
  <div class="scene-session-badge"><i class="dot"></i>${game.awaitingSettlement?'SESSIE AFGELOPEN · ROND JE VANGSTEN AF':session?loadout.rods.length+' LIJN'+(loadout.rods.length>1?'EN':'')+' IN HET WATER':'KLAAR VOOR EEN NIEUWE SESSIE'}</div>

@@ -4,7 +4,7 @@ import {GEAR,SUPPLIES,COMBOS,SPECIES} from './data.js';
 const gear=Object.fromEntries(GEAR.map(item=>[item.id,item]));
 const supplies=Object.fromEntries(SUPPLIES.map(item=>[item.id,item]));
 const species=Object.fromEntries(SPECIES.map(item=>[item.id,item]));
-const carpVisitors={brasem:1.4,voorn:.75,ruisvoorn:.55,winde:.45,baars:.2};
+const carpVisitors={brasem:1.4,voorn:.75,ruisvoorn:.55,winde:.45,baars:.2,kolblei:.6,alver:.2,pos:.12,kopvoorn:.35,serpeling:.25,sneep:.2,blauwneus:.35,riviergrondel:.12,witvinriviergrondel:.1,zwartbekgrondel:.1,marmergrondel:.08};
 const smallFishBaits={maggots:1.4,corn:1,worms:1.1,pellets:.45,boilies:.1,bacon:.3,fishbait:.06,squid:.06,krill:.1};
 const breamBaits={maggots:1.3,corn:1.2,worms:1.2,pellets:1.4,boilies:1,bacon:.5,fishbait:.2,squid:.2,krill:.35};
 const crayfishBaits={maggots:.85,corn:.7,worms:1.4,pellets:1.25,boilies:1,bacon:1.5,fishbait:1.5,squid:1.4,krill:1.3};
@@ -24,7 +24,7 @@ export function encounterPool(rod,water){
   const fish=species[id],nuisance=isCrayfish(fish),bycatch=!nuisance&&rod.style==='karper'&&Object.hasOwn(carpVisitors,id);
   const styleFits=fish.styles.includes(rod.style)||bycatch;
   const favoured=attracts.has(id);
-  let weight=styleFits?(favoured?3.5:1):0;
+  let weight=styleFits?(favoured?3.5:1)*(fish.encounterWeight??1):0;
   if(bycatch)weight*=carpVisitors[id]*baitStrength(baitIds,id==='brasem'?breamBaits:smallFishBaits);
   if(!nuisance&&rod.baitSize==='large')weight*=fish.max<2?.3:fish.max>5?1.2:1;
   if(!nuisance&&rod.baitSize==='small')weight*=fish.max<2?1.2:fish.max>5?.85:1;

@@ -10,7 +10,7 @@ import {fishingView} from '../dist/game-view.js';
 // browser layout or rasterisation, so this suite does not claim screenshot QA.
 const checks=[],errors=[],virtualConsole=new VirtualConsole();
 virtualConsole.on('jsdomError',error=>errors.push(String(error)));
-const css=await fs.readFile(new URL('../dist/style.css',import.meta.url),'utf8');
+const css=(await fs.readFile(new URL('../dist/style.css',import.meta.url),'utf8'))+'\n'+(await fs.readFile(new URL('../dist/atelier.css',import.meta.url),'utf8'));
 function documentFor(body){return new JSDOM(`<!doctype html><html><head><style>${css}</style></head><body>${body}</body></html>`,{url:'https://europa-angler.test/',virtualConsole,pretendToBeVisual:true});}
 function foreground(rods,selected=0){return documentFor(`<svg class="fishing-view-svg" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">${fishingForeground(rods,selected)}</svg>`);}
 const fixture=(style,indicator=null)=>({...starterRod(style),indicator});
@@ -24,18 +24,18 @@ const tipEnd=line=>line.querySelector('.fishing-large-tip').getAttribute('d').ma
  assert.equal(document.querySelector('.scene-rod-controls').previousElementSibling.className,'scene-control-toolbar','Modes and guidance must stay immediately above all per-rod controls');
  assert(document.querySelector('.scene-rod-control [data-signal-text]')&&document.querySelector('.scene-rod-control [data-bite-progress]'),'Each rod must show its true bite cue and remaining reaction window');
  assert.equal(illustration.getAttribute('viewBox'),'0 0 1200 600');
- assert.equal(illustration.getAttribute('preserveAspectRatio'),'xMidYMid meet','Every rod must remain visible without cropping the composite view');
- assert(illustration.querySelector('svg'),'The lake and foreground must share the same camera so the float stays on the water');
+ assert.equal(illustration.getAttribute('preserveAspectRatio'),'xMidYMax meet','Every rod must remain visible without cropping the composite view');
+ assert(scene.querySelector('.atelier-scene-background[src]'),'The landscape must fill the scene independently of the uncropped rods');
  const sceneStyle=dom.window.getComputedStyle(scene),illustrationStyle=dom.window.getComputedStyle(illustration);
- assert.equal(sceneStyle.aspectRatio,'2 / 1','The stage must match the full composite SVG and scale with the available width');
- assert.equal(dom.window.getComputedStyle(document.querySelector('.scene-rod-controls')).gridTemplateColumns,'repeat(auto-fit,minmax(190px,1fr))');
+ assert.equal(sceneStyle.aspectRatio,'auto','The landscape fills the responsive stage while the rods retain their proportions');
+ assert.equal(dom.window.getComputedStyle(document.querySelector('.scene-rod-controls')).gridTemplateColumns,'repeat(auto-fit,minmax(min(100%,230px),1fr))');
  assert(Number.parseFloat(dom.window.getComputedStyle(document.querySelector('.scene-strike-button')).minHeight)>=44,'Every line must have a usable strike target');
  assert.equal(illustrationStyle.width,'100%');assert.equal(illustrationStyle.height,'100%','The scene SVG must fill the stage rather than inherit small icon sizing');
  assert(!document.querySelector('.bite-station,.rod-monitor'),'The fishing view must not create separate tiny rod-monitor cards');
  assert.equal(document.querySelectorAll('[data-focus-line],#scene-strike-hud').length,0,'No selected-rod HUD may hide the other controls');
  assert.equal(document.querySelectorAll('.scene-rod-control').length,game.loadout.rods.length);
  assert(scene.querySelector('[aria-live="polite"]'),'Real bite announcements must remain accessible');
- checks.push('The full composite scene uses meet and a matching aspect ratio; each rod has its own visible strike action and bite window');
+ checks.push('The foreground uses bottom-aligned meet and a separate full-size landscape; each rod has its own visible strike action and bite window');
  dom.window.close();
 }
 

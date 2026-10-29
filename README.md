@@ -1,90 +1,40 @@
-# Europa Angler — Fishing Idle 3.1.2
+# Europa Angler — Atelier 3.2.0
 
-Een speelbare lokale idle-visgame met Engels als standaard en een direct beschikbare Nederlandse taalkeuze. Je bouwt van één hengel naar een visbedrijf met meerdere lijnen, eigen viswater en een vloot. De vormgeving, content en spelregels zijn oorspronkelijk; Melvor Idle was alleen een genre-inspiratie.
+Een geïllustreerde visgame met losse hengelpresets, Europese viswateren, wedstrijden en een eigen visbedrijf.
 
-## Bestaande hosting
+[Spelen](https://europa-angler.daanpaalvastjunkmail.workers.dev/) · [GitHub](https://github.com/daanpaalvastjunkmail-png/eu-angler)
 
-Het door de speler opgegeven adres is https://europa-angler.daanpaalvastjunkmail.workers.dev/ — Cloudflare Workers. Werk de bestaande Worker `europa-angler` bij in hetzelfde account. `npm run build:workers` maakt `build/workers/` met de gebouwde game, een Wrangler-configuratie en `UPDATEN.txt`. Uploaden gebeurt vanuit die map met `npx wrangler@4 deploy --config wrangler.json`, na aanmelden. Dit verandert de vaste savesleutel niet. De eerdere Pages-route blijft alleen van toepassing op installaties die daadwerkelijk op Pages staan.
+De Atelier-editie geeft alle schermen een nieuwe stijl met marineblauw, zand, teal, koper en goud. Vier geschilderde landschappen en nieuwe SVG-illustraties brengen vissen, hengels, aas, materiaal en schepen in beeld. Het soortenboek bevat 54 vissen en karpervarianten plus rivierkreeft: 34 toevoegingen, met zoekfunctie, filters, leefgebieden en vangstrecords.
 
-## Automatische updates via GitHub
+De gekozen hengel bepaalt de vismethode. De planner toont bruikbare hengelplaatsen onder elkaar, tot zes hengels binnen de level- en scholingsgrenzen; maximaal twee dobber-, vier feeder- en vier karperhengels. In de werkplaats verwijzen genummerde onderdelen naar de keuzes voor hengel, molen, lijn, lood of voerkorf, onderlijn, haak en aas.
 
-Zet de inhoud van deze broncodemap direct in een eigen GitHub-repository voor Europa Angler. `package.json`, `wrangler.json`, `dist/`, `scripts/` en `tests/` horen bovenaan in de repository te staan, zonder extra omvattende map. De lokale mapnaam `dist/` bevat hier de leesbare spelbroncode en moet dus ook mee. Upload geen `node_modules/`, `build/`, `.openai/` of persoonlijke saves.
+## Bouwen en publiceren
 
-Koppel de bestaande Worker `europa-angler` via Settings > Builds > Connect aan die repository. Gebruik deze instellingen:
-
-| Instelling | Waarde |
-| --- | --- |
-| Production branch | `main` (of de gekozen hoofdbranch van de repository) |
-| Build command | `npm run build:cloudflare` |
-| Deploy command | `npx wrangler deploy` |
-| Root directory / Path | Leeg laten, of `/` als een waarde verplicht is |
-| Disable builds | Uit |
-
-Cloudflare installeert de npm-afhankelijkheden. De build voert syntaxcontroles, alle spelsuites en de daadwerkelijke standalone- en webreleasecontroles uit. Een fout stopt het proces voor publicatie. De Wrangler-configuratie bovenaan wijst naar `build/web/` en houdt de bestaande Worker-naam aan. De afzonderlijke configuratie in `workers/` is voor het handmatige updatepakket, niet voor de rootdirectory van deze Git-koppeling.
-
-Een push naar de gekozen productiebranch triggert de volgende build en publicatie. De eerste geslaagde deployment moet in Cloudflare worden gecontroleerd; alleen toegang aan GitHub geven of deze bestanden lokaal voorbereiden activeert de verbinding nog niet. Speel op het bestaande speladres met hetzelfde browserprofiel om dezelfde save te blijven gebruiken. Er is geen synchronisatie tussen apparaten.
-
-## Herstel van openen en herladen — 3.1.2
-
-Cloudflare verwijst `/index.html` door naar `/`. De offlinecache normaliseert deze doorgestuurde pagina voordat de browser hem opnieuw gebruikt; zo voorkomt de game `ERR_FAILED` bij openen of herladen. Een bestaande cache met deze fout wordt automatisch vervangen zodra de herstellende serviceworker wordt opgehaald. Dit wist geen spelopslag en herlaadt geen actieve speelsessie. Gewone latere updates blijven wachten op **Opslaan & bijwerken**.
-
-## Indeling — 3.1.1
-
-De sessieplanner toont alleen gekochte hengelplaatsen die je op je huidige level mag gebruiken, altijd in één kolom. Boven de lijst staat het volgende vrijspeellevel. Zodra een extra plaats op jouw level beschikbaar is, verschijnt daar de aankoopknop; toekomstige lege slottegels worden niet getoond.
-
-De hengelwerkplaats toont een vrijstaande hengeltekening en een aparte vergrote montage. Lood of voerkorf, wartel, onderlijn, haak en aas zijn zichtbaar. Genummerde aanwijslijnen koppelen onderdelen aan hun keuzeblok onder de tekening; aanklikken of bedienen met het toetsenbord brengt de bijbehorende keuze in beeld. Op kleinere schermen staan de tekeningen en keuzeblokken onder elkaar.
-
-## Hengelpresets en sessiekeuze — 3.1.0
-
-Volledige loadoutpresets zijn vervangen door losse hengelpresets. In **Hengelpresets** bouw, benoem, wijzig en repareer je elke fysieke hengel afzonderlijk. Er is geen keuzemenu voor de vismethode: het gekozen hengelonderdeel bepaalt automatisch feeder, karper, dobber of zee. De bouwer toont passende molens en montages; bezette onderdelen blijven herkenbaar en kunnen niet dubbel worden gebruikt.
-
-Bij **Plan je sessie → 01 Kies je hengels** kies je direct een opgeslagen hengelpreset per beschikbare plaats. De selectie wordt meteen bewaard en rekent paklijst, scholingspunten, kosten en verwachtingen opnieuw uit. Een lege plaats is toegestaan; om te starten is minstens één geldige hengel nodig. Elke fysieke hengel kan één keer mee. Je kunt je hengels tijdens een lopende sessie niet omwisselen.
-
-| Grens | Maximum |
-| --- | --- |
-| Alle ingezette hengels samen | 6 |
-| Dobber | 2 |
-| Feeder | 4 |
-| Karper | 4 |
-| Zee | 3 |
-
-Deze grenzen vervangen de levelprogressie niet. Plaatsen komen vrij op level **1, 10, 40, 90, 170 en 300** en worden met spelgeld gekocht. De visacademie begrenst daarnaast de zwaarte van de combinatie: T1–T7 gebruiken **2, 3, 5, 8, 12, 18 en 26 scholingspunten** per hengel, op basis van de hoogste tier van hengel of molen. Twee T1-hengels kunnen vanaf level 10; T1 + T2 vanaf 15 en twee T2 vanaf 18.
-
-### Bestaande voortgang
-
-Opslagschema **4** zet de huidige selectie uit oude loadouts om naar de gekozen losse hengels. Opgeslagen hengelontwerpen, fysieke onderdelen, conditie, geld, XP, vispassen, vangsten en betaalde lopende sessies blijven behouden. Oudere v2-ontwerpen worden eerst omgezet naar losse fysieke hengels; ontwerpen zonder vrije onderdelen blijven bewaard als **Nog te bouwen**.
-
-Het vaste opslagadres is `europa-angler-progress`, met herstelkopie `europa-angler-progress-backup`. De oude sleutel `europa-angler-idle-v2` wordt niet overschreven. De game beschermt onleesbare saves, saves uit nieuwere schema's en voortgang uit een ander tabblad. Blijf op hetzelfde websiteadres in hetzelfde browserprofiel spelen. Er is geen automatische overdracht tussen apparaten; daarvoor gebruik je JSON-export/import.
-
-## Spelen
-
-Kies je hengels, viswater, sessieduur en voerreserve in de planner. Starten koopt ontbrekende voorraad en een passende vispas. Alle ingezette hengels blijven tegelijk zichtbaar, met een eigen beetmelding en aanslagknop. Met toetsen 1–6 sla je aan op de overeenkomstige plaats; spatie kiest een beet die aandacht vraagt. De assistent vist automatisch.
-
-Na de sessie kies je voor iedere vangst verkopen, terugzetten voor XP of uitzetten in je eigen vijver. Verwerk de vangsten voordat je een volgende sessie begint. De geschiedenis blijft bij **Sessies & vangsten** staan.
-
-De game heeft 300 vislevels, tien wateren, twintig vissoorten plus rivierkreeften, rigbouw, wedstrijden tegen computervissers, een eigen viswater, een vloot en vrijwillige prestige. Engels is de standaardtaal; Nederlands is direct beschikbaar. Alle voortgang staat lokaal in de browser. Offline voortgang wordt bij terugkomst berekend, binnen je vrijgespeelde tijdslimiet.
-
-## Bouwen en controleren
-
-Benodigd: een recente Node.js-runtime. De release is getest met Node.js 22.
+Benodigd: Node.js 22 en npm.
 
 ```sh
 npm install
 npm run build:cloudflare
 ```
 
-De Cloudflare-build voert syntaxcontroles, alle spel- en interfacetestgroepen en controles van de daadwerkelijke standalone- en webrelease uit. De webversie komt in `build/web/`; de zelfstandige versie in `build/Europa-Angler.html`. De webbuild gebruikt bestanden met inhoudshashes en een serviceworker met gecontroleerde activering na het opslaan van voortgang.
+Dit voert syntaxcontroles, speltests en releasetests uit. De webbuild komt in `build/web/`; de zelfstandige offlinegame in `build/Europa-Angler.html`.
 
-De tests omvatten de methode die uit de hengel volgt, alle stijlgrenzen, het totaal van zes, dubbele fysieke onderdelen, level- en opleidingsgrenzen, bewaren/herladen en migratie van echte 2.8.1- en 3.0.0-savefixtures. De interfacetests controleren DOM en daadwerkelijke spelacties; ze vervangen geen visuele controle op een echte telefoon.
+Cloudflare Workers Builds gebruikt de bestaande GitHub-koppeling met `daanpaalvastjunkmail-png/eu-angler`, productiebranch `main`:
 
-## Belangrijke bronbestanden
+- Build command: `npm run build:cloudflare`
+- Deploy command: `npx wrangler deploy`
+- Worker: `europa-angler`, geconfigureerd in `wrangler.json`
 
-- `dist/app.js`: navigatie, sessieplanning en bediening.
-- `dist/session-rods-ui.js`: rechtstreekse hengelkeuze bij stap 01.
-- `dist/assembly-ui.js`: individuele hengelpresets, automatisch afgeleide methode en reparaties.
-- `dist/engine.js`: simulatie, selectievalidatie, aankopen, sessies en migratie.
-- `dist/tackle.js`: unieke fysieke onderdelen, bezetting en opslagstructuur.
-- `dist/training.js`: scholingspunten, materiaalbelasting en breukrisico.
-- `dist/data.js`: prijzen, stijlgrenzen, content en levelmijlpalen.
-- `dist/save-store.js`, `save-codec.js`, `updates.js`: stabiele opslag, compacte vangstgeschiedenis en veilige app-updates.
+Een nieuwe commit op `main` start automatisch een build en publicatie op hetzelfde speladres. Controleer de GitHub-check `Workers Builds: europa-angler` voor de uitkomst.
 
+## Opslag en updates
+
+Speel op hetzelfde adres en in hetzelfde browserprofiel om je voortgang te blijven gebruiken. De onlinegame gebruikt de bestaande opslagsleutel `europa-angler-progress`. Opslag uit schema 4 wordt automatisch naar schema 5 overgezet; dit schema ondersteunt de uitgebreide soortenlijst en beschermt nieuwe opslag tegen schrijven door oudere clients.
+
+Bij een beschikbare app-update bewaart **Save & update** eerst de voortgang. Gebruik **Instellingen → Opslagbestand downloaden** voor een eigen back-up; daar kun je ook een export importeren. De zelfstandige HTML heeft browseropslag die losstaat van het onlineadres: draag voortgang via export/import over.
+
+## Artwork
+
+De vier landschappen in `dist/assets/` zijn met de ingebouwde image-generationtool gemaakt. De volledige prompts staan in [docs/ART-PROMPTS.json](docs/ART-PROMPTS.json). Vis- en materiaalillustraties staan als SVG-code in `species-art.js`, `art.js`, `atelier-ui.js`, `visuals.js` en `assembly-diagram.js`; lettertypelicenties staan in `dist/vendor/`.
+
+Karperschubpatronen worden als varianten behandeld. Gewichten, zeldzaamheid en vangstkansen volgen de spelbalans.

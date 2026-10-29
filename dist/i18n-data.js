@@ -1,3 +1,4 @@
+import {SPECIES_INFO} from './species-info.js';
 // The simulation and saved games retain their stable Dutch source strings.
 // Translations are presentation-only; no saved item IDs or custom names change.
 const entries = `
@@ -1443,4 +1444,287 @@ Lood / montage aanpassen|Edit weight / rig
 Haak aanpassen|Edit hook
 Aas aanpassen|Edit bait
 `.trim().split('\n').map(line=>line.split('|'));
-export const ENGLISH = Object.fromEntries([...entries,...fragments,...equipmentEntries,...rodSelectionEntries,...workshopLayoutEntries]);
+const speciesExpansionEntries=`
+Lineaire spiegelkarper|Linear mirror carp
+Rijenkarper|Row-scaled carp
+Lederkarper|Leather carp
+Volschubspiegel|Fully scaled mirror carp
+Giebel|Prussian carp
+Riviergrondel|Common gudgeon
+Witvinriviergrondel|White-finned gudgeon
+Zwartbekgrondel|Round goby
+Marmergrondel|Western tubenose goby
+Kolblei|Silver bream
+Alver|Bleak
+Pos|Ruffe
+Kopvoorn|European chub
+Serpeling|Common dace
+Sneep|Common nase
+Blauwneus|Vimba bream
+Snoekbaars|Zander
+Paling|European eel
+Kwabaal|Burbot
+Beekforel|Brown trout
+Regenboogforel|Rainbow trout
+Vlagzalm|European grayling
+Roofblei|Asp
+Bot|European flounder
+Schol|European plaice
+Schar|Common dab
+Wijting|Whiting
+Schelvis|Haddock
+Koolvis|Saithe
+Makreel|Atlantic mackerel
+Leng|Common ling
+Zeewolf|Atlantic wolffish
+Goudmakreel|Mahi-mahi
+Wahoo|Wahoo
+Karperachtigen|Cyprinids
+Baarsachtigen|Perch family
+Snoeken|Pikes
+Meervallen|Catfishes
+Steuren|Sturgeons
+Zeebaarzen|Sea basses
+Kabeljauwachtigen|Cod relatives
+Platvissen|Flatfishes
+Makreelachtigen|Mackerels and tunas
+Goudmakrelen|Dolphinfishes
+Zwaardvissen|Swordfishes
+Rivierkreeften|Crayfishes
+Palingachtigen|Eels
+Zalmachtigen|Salmonids
+Zeewolven|Wolffishes
+Grondels|Gobies
+Karpers & varianten|Carp & variants
+Roofvis & forel|Predators & trout
+Bodemvissen|Bottom dwellers
+Zee & oceaan|Sea & ocean
+Algemeen|Common
+Ongewoon|Uncommon
+Zeldzaam|Rare
+Bijzonder|Special
+`.trim().split('\n').map(line=>line.split('|'));
+const speciesNotesEnglish = {
+ "voorn": [
+  "Silver flanks, red eyes and warm reddish-brown fins.",
+  "Plant margins, lakes and quiet river arms."
+ ],
+ "ruisvoorn": [
+  "A golden sheen, red fins and a slightly upturned mouth.",
+  "Sunny reed beds and lily patches."
+ ],
+ "brasem": [
+  "A deep, flattened flank with a long anal fin.",
+  "Soft beds in lakes and slow-flowing rivers."
+ ],
+ "zeelt": [
+  "Olive green with fine scales, red eyes and rounded fins.",
+  "Warm, weedy lakes with a soft bottom."
+ ],
+ "kroes": [
+  "A bronze cyprinid without barbels and with a gently convex dorsal fin.",
+  "Sheltered ponds, ditches and weedy margins."
+ ],
+ "schub": [
+  "Regular scales cover the entire flank of this carp form.",
+  "Lakes, old river arms and spacious, weedy waters."
+ ],
+ "spiegel": [
+  "Large, irregular scales create a distinctive flank pattern.",
+  "Warm lakes, ponds and quiet river arms."
+ ],
+ "winde": [
+  "A silver flank, solid build and reddish lower fins.",
+  "Broad rivers, canals and connected lakes."
+ ],
+ "barbeel": [
+  "Four barbels identify this powerful bottom-feeding fish.",
+  "Flowing river reaches with sand, gravel and stones."
+ ],
+ "baars": [
+  "Dark vertical bands, a spiny dorsal fin and orange-red lower fins.",
+  "Bankside structure, weed beds and drop-offs."
+ ],
+ "snoek": [
+  "A long body with light spots and a broad, flattened mouth.",
+  "Weedy lakes and quiet river arms."
+ ],
+ "graskarper": [
+  "An elongated cyprinid with dark-edged scales and a blunt head.",
+  "Warm fresh water with abundant aquatic plants."
+ ],
+ "meerval": [
+  "A broad head, long barbels and a smooth, marbled flank.",
+  "Deep freshwater channels and sheltered river arms."
+ ],
+ "steur": [
+  "Rows of bony scutes and a pointed snout define its profile.",
+  "Deeper freshwater zones; stocked in this game water."
+ ],
+ "zeebaars": [
+  "A silver hunter with two dorsal fins and a powerful tail.",
+  "Coastal water, tidal currents and rocky margins."
+ ],
+ "kabeljauw": [
+  "Mottled flanks, three dorsal fins and a chin barbel.",
+  "Cool seas, wrecks and deep bottom structure."
+ ],
+ "heilbot": [
+  "A large, elongated flatfish with both eyes on one side.",
+  "Cold marine sand and gravel beds."
+ ],
+ "tonijn": [
+  "Streamlined steel blue with yellow fins and finlets.",
+  "Warm ocean water around current seams and baitfish."
+ ],
+ "blauwvintonijn": [
+  "A powerful tuna with a dark blue back and silver belly.",
+  "Open Atlantic water and large baitfish shoals."
+ ],
+ "zwaardvis": [
+  "Its long, flattened, sword-like upper jaw is unmistakable.",
+  "Open ocean, deep water layers and current fronts."
+ ],
+ "rivierkreeft": [
+  "A clawed crustacean that may cling to bait on the bottom.",
+  "Freshwater beds with plenty of shelter."
+ ],
+ "linear_spiegel": [
+  "A mirror carp form with a striking row of large scales along its flank.",
+  "Carp lakes and old river arms."
+ ],
+ "rijenkarper": [
+  "A carp form with prominent scale rows and large areas of bare skin.",
+  "Quiet carp waters and broad river arms."
+ ],
+ "lederkarper": [
+  "An almost scaleless carp form with a smooth outline.",
+  "Sheltered, warm carp lakes."
+ ],
+ "volschub_spiegel": [
+  "A mirror carp form covered in many large, irregularly arranged scales.",
+  "Established carp waters with soft and hard bottom zones."
+ ],
+ "giebel": [
+  "A silvery-grey cyprinid without barbels and with a concave dorsal-fin edge.",
+  "Quiet lakes, ditches and river arms."
+ ],
+ "riviergrondel": [
+  "A small bottom fish with flank spots, spotted fins and two barbels.",
+  "Sand and gravel beds, often in a gentle current."
+ ],
+ "witvinriviergrondel": [
+  "A slender gudgeon-like fish with pale fins and long barbels.",
+  "Sandy beds of large, flowing rivers."
+ ],
+ "zwartbekgrondel": [
+  "A stocky bottom fish with a black spot on its first dorsal fin.",
+  "Stony banks and sandy beds in rivers and lakes."
+ ],
+ "marmergrondel": [
+  "A small, marbled goby with tubular nostrils.",
+  "Shallow margins with plants, stones or mud."
+ ],
+ "kolblei": [
+  "A compact, silver bream relative with conspicuously large eyes.",
+  "Quiet rivers, canals and weedy lakes."
+ ],
+ "alver": [
+  "A small, silver surface fish with an upturned mouth.",
+  "Open water and sheltered margins."
+ ],
+ "pos": [
+  "A spotted, sandy-coloured bottom fish with a tall, spiny dorsal fin.",
+  "Sandy or silty beds of lakes and rivers."
+ ],
+ "kopvoorn": [
+  "A broad head, large mouth and dark-edged scales.",
+  "Riverbanks, overhanging trees and current seams."
+ ],
+ "serpeling": [
+  "A slender silver fish with a small, slightly downward-facing mouth.",
+  "Clear rivers and streams over sand and gravel."
+ ],
+ "sneep": [
+  "Its projecting snout sits above a straight, downward-facing mouth.",
+  "Flowing river sections with a stony bottom."
+ ],
+ "blauwneus": [
+  "Silver flanks and a dark snout above a small mouth.",
+  "Lower river reaches and adjoining deep arms."
+ ],
+ "snoekbaars": [
+  "An elongated predator with two dorsal fins, dark bands and sharp fangs.",
+  "Drop-offs and turbid lakes or rivers."
+ ],
+ "paling": [
+  "A smooth, snake-like body with a continuous fin fringe.",
+  "Bottom structure, dark margins and connected inland waters."
+ ],
+ "kwabaal": [
+  "A mottled freshwater cod relative with a clear chin barbel.",
+  "Cool water and deep river beds."
+ ],
+ "beekforel": [
+  "A golden flank scattered with dark and red spots.",
+  "Cool, oxygen-rich inflows and margins."
+ ],
+ "regenboogforel": [
+  "Black spots and a pink-purple stripe along a silver flank.",
+  "Cool lakes and well-oxygenated fresh water."
+ ],
+ "vlagzalm": [
+  "A large, colourful, sail-like dorsal fin above silvery-grey flanks.",
+  "Clear, cool currents over gravel."
+ ],
+ "roofblei": [
+  "A silver predator with a large mouth and deeply forked tail.",
+  "Current seams and open water in large rivers."
+ ],
+ "bot": [
+  "A greenish-brown flatfish with irregular dark markings.",
+  "Sandy and muddy beds along coasts and estuaries."
+ ],
+ "schol": [
+  "Orange spots stand out across its brown upper side.",
+  "Shallow sandy beds in cool seas."
+ ],
+ "schar": [
+  "A small, sandy-coloured flatfish with a strongly arched lateral line.",
+  "Sandy coastal beds and open shallows."
+ ],
+ "wijting": [
+  "Slender and silvery, with three dorsal fins and a dark pectoral-fin spot.",
+  "Cool coastal water over sand and silt."
+ ],
+ "schelvis": [
+  "A black lateral line and dark shoulder spot contrast with silver-grey skin.",
+  "Cool seabeds of sand, gravel and shells."
+ ],
+ "koolvis": [
+  "A dark green back, silver belly and light lateral line.",
+  "Rocky coasts, fjords and open northern seas."
+ ],
+ "makreel": [
+  "A blue-green sheen with dark, wavy bars across its back.",
+  "Open-water shoals above the continental shelf."
+ ],
+ "leng": [
+  "An elongated sea fish with a chin barbel and long dorsal fin.",
+  "Deep rocky beds, ledges and wrecks."
+ ],
+ "zeewolf": [
+  "A solid head, powerful teeth and dark vertical bands.",
+  "Cold rocky beds with holes and shellfish."
+ ],
+ "goudmakreel": [
+  "A high forehead, long blue dorsal fin and bright golden-green flanks.",
+  "Warm open ocean, often near floating material."
+ ],
+ "wahoo": [
+  "A very slender ocean hunter with blue vertical bands and a pointed mouth.",
+  "Warm Atlantic water around current seams and baitfish shoals."
+ ]
+};
+const speciesNotesEntries=Object.entries(speciesNotesEnglish).flatMap(([id,[description,habitat]])=>[[SPECIES_INFO[id].description,description],[SPECIES_INFO[id].habitat,habitat]]);
+export const ENGLISH = Object.fromEntries([...entries,...fragments,...equipmentEntries,...rodSelectionEntries,...workshopLayoutEntries,...speciesExpansionEntries,...speciesNotesEntries]);

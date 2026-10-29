@@ -1,11 +1,12 @@
 import {assembleRods} from './tackle-fixtures.mjs';
 import assert from 'node:assert/strict';
+import {SAVE_KEY} from '../dist/save-store.js';
 import {performance} from 'node:perf_hooks';
 import {IdleGame,starterRod,xpAt} from '../dist/engine.js';
 import {GEAR,SPECIES} from '../dist/data.js';
 import {SESSION_CAP} from '../dist/economy.js';
 import {packHistory,unpackHistory,packSave,unpackSave} from '../dist/save-codec.js';
-const checks=[],KEY='europa-angler-progress',LIMIT=4*1024*1024;
+const checks=[],KEY=SAVE_KEY,LIMIT=4*1024*1024;
 function setup(){let now=1800000000000;const data=new Map();let bytes=0;const storage={getItem:k=>data.get(k)||null,setItem:(k,v)=>{if((k.length+v.length)*2>LIMIT)throw Error('QuotaExceededError');data.set(k,v);bytes=(k.length+v.length)*2;}};const g=new IdleGame({storage,now:()=>now});g.state.seed=123456;return {g,storage,data,now:()=>now,setNow:n=>{now=n;},bytes:()=>bytes};}
 function weekReady(g){g.state.xp=xpAt(300);g.state.money=1e12;g.state.rodSlots=6;for(const x of GEAR)g.state.gear[x.id]=6;Object.assign(g.state.upgrades,{offline:5,autosell:1,rodrest:2,autostrike:3,stealth:3});g.state.settings.autosell=true;g.state.settings.keepTrophies=false;const rods=['feeder','feeder','karper','karper','karper','dobber'].map((style,slot)=>({...starterRod(style),slot,rod:`${style}_rod_sovereign`,reel:`${style}_reel_sovereign`,terminal:`${style}_terminal_sovereign`,line:'line_sovereign',hook:'hook_8',liquid:'liquid_scopex'}));assert(g.setSessionRods(assembleRods(g,rods)).ok);assert(g.selectWater('poldermeer').ok);g.setPlan({duration:SESSION_CAP,reserve:.1});assert(g.startSession().ok);}
 {

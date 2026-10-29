@@ -1,7 +1,7 @@
 import {GEAR} from './data.js';
 import {rodSnapshot,ROD_FIELDS} from './rig-presets.js';
 export const PARTS=['rod','reel','line','hook','terminal','indicator'];
-export const SCHEMA_VERSION=4;
+export const SCHEMA_VERSION=5;
 const gear=Object.fromEntries(GEAR.map(i=>[i.id,i])),clone=x=>JSON.parse(JSON.stringify(x));
 export const sameSetup=(a,b)=>!!a&&!!b&&ROD_FIELDS.every(k=>(a[k]??null)===(b[k]??null));
 export const ownerOf=(state,itemId,except=null)=>state.rodPresets.find(p=>p.id!==except&&p.assembled&&Object.values(p.items||{}).includes(itemId));

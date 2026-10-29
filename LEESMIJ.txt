@@ -1,0 +1,60 @@
+EUROPA ANGLER — ATELIER 3.2.0
+
+SPELEN
+https://europa-angler.daanpaalvastjunkmail.workers.dev/
+Kies bovenaan NL voor Nederlands; Engels is de standaardtaal.
+
+NIEUW
+- Een volledige visuele stijl in marineblauw, zand, teal, koper en goud.
+- Vier geschilderde landschappen en nieuwe illustraties voor vissen,
+  hengels, materiaal, aas en schepen.
+- 54 vissen en karpervarianten plus rivierkreeft: 34 toevoegingen.
+- Een soortenboek met zoeken, filters, leefgebieden en vangstrecords.
+- Losse hengelpresets; de gekozen hengel bepaalt de vismethode.
+- Alleen bruikbare hengelplaatsen in de planner, onder elkaar.
+- Maximaal zes hengels binnen de level- en scholingsgrenzen:
+  maximaal twee dobber-, vier feeder- en vier karperhengels.
+- Een werkplaats met duidelijke tekeningen van hengel, molen, lijn,
+  lood of voerkorf, onderlijn, haak en aas. Klik op een genummerd
+  onderdeel om de bijbehorende keuze te openen.
+
+VOORTGANG EN UPDATES
+Blijf op hetzelfde speladres en gebruik hetzelfde browserprofiel.
+De onlinegame gebruikt je bestaande opslag. Schema 4 wordt automatisch
+omgezet naar schema 5, met ondersteuning voor alle nieuwe soorten.
+Oudere clients mogen deze nieuwere opslag niet overschrijven.
+
+Verschijnt een updatebericht, kies Save & update: je voortgang wordt
+opgeslagen voordat de nieuwe versie opent. Download via Instellingen
+regelmatig je opslagbestand als eigen back-up. Via dezelfde pagina
+kun je een opgeslagen bestand importeren.
+
+AUTOMATISCHE PUBLICATIE
+Repository: https://github.com/daanpaalvastjunkmail-png/eu-angler
+Cloudflare bouwt commits op main automatisch met:
+  npm run build:cloudflare
+en publiceert via:
+  npx wrangler deploy
+De Worker heet europa-angler en gebruikt hetzelfde onlineadres.
+De GitHub-check Workers Builds: europa-angler toont het resultaat.
+
+ZELF BOUWEN / OFFLINE SPELEN
+Benodigd: Node.js 22 en npm. Voer in de broncodemap uit:
+  npm install
+  npm run build:cloudflare
+Dit voert ook syntax-, spel- en releasetests uit.
+De webbuild staat in build/web/.
+De zelfstandige offlinegame staat in build/Europa-Angler.html.
+Open dit HTML-bestand in Chrome, Edge, Firefox of Safari. Artwork en
+lettertypen zijn inbegrepen. Bewaar het bestand op een vaste plek.
+Browseropslag bij een lokaal HTML-bestand staat los van de onlinegame;
+gebruik export/import om je voortgang tussen beide over te dragen.
+
+ARTWORK
+De vier landschappen zijn gemaakt met de ingebouwde image-generationtool.
+De volledige prompts staan in docs/ART-PROMPTS.json. Afbeeldingen staan
+in dist/assets/. Vis- en materiaalillustraties zijn SVG-code in dist/.
+Lettertypelicenties staan in dist/vendor/.
+
+Karperschubpatronen zijn varianten binnen dezelfde soort. Gewichten,
+zeldzaamheid en vangstkansen in de game volgen de spelbalans.

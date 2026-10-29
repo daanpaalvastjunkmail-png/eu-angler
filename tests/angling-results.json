@@ -12,8 +12,8 @@
     "Complete checkout sells exact value, releases fish for exact bonus XP and stocks the pond; full history survives prestige without retained fish or duplicate rewards",
     "Insufficient pond capacity rejects the entire checkout without partial cash or release XP; all decisions and departure gate survive reload",
     "Automatic sales stay in the full session history and are never available for another sale",
-    "Analytical catch rates, species shares and size bins match 7,796 seeded simulated catches (auto 60.9/h vs forecast 60.0/h)",
-    "Actively responding to genuine bites produces more catches over long sessions (3594 active vs 1943 idle)",
+    "Analytical catch rates, species shares and size bins match 6,219 seeded simulated catches (auto 48.6/h vs forecast 47.8/h)",
+    "Actively responding to genuine bites produces more catches over long sessions (2724 active vs 1542 idle)",
     "Audio scheduling distinguishes standard reel, upgrade alarm, bells and silent floats; mute suppresses oscillators"
   ]
 }

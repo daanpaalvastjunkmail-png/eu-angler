@@ -1,3 +1,4 @@
+import {SCHEMA_VERSION} from '../dist/tackle.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {IdleGame,starterRod,xpAt} from '../dist/engine.js';
@@ -48,7 +49,7 @@ for(const [method,cap,companion] of [['feeder',4,'dobber'],['karper',4,'dobber']
 {
  const original=JSON.parse(await fs.readFile(new URL('./fixtures/save-3.0.0.json',import.meta.url),'utf8'));
  const storage=memoryStorage();storage.setItem(SAVE_KEY,JSON.stringify(original));
- const g=new IdleGame({storage,now:()=>original.lastAt});assert(!g.store.blocked);assert.equal(g.state.schemaVersion,4);
+ const g=new IdleGame({storage,now:()=>original.lastAt});assert(!g.store.blocked);assert.equal(g.state.schemaVersion,SCHEMA_VERSION);
  for(const key of ['money','xp','tackleItems','rodPresets','permits','net','records','stats'])assert.deepEqual(g.state[key],original[key],key);
  for(const key of ['stock','gear'])for(const [id,n]of Object.entries(original[key]))assert.equal(g.state[key][id],n,key+':'+id);
  assert.deepEqual(g.state.selectedRods,original.loadouts.find(l=>l.id===original.activeLoadout).rods);
