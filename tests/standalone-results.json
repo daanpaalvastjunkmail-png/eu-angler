@@ -1,8 +1,8 @@
 {
   "status": "PASS",
-  "scope": "Actual self-contained release file evaluated from file: origin; no module replacement or world stubs",
+  "scope": "Exact unmodified inline game bundle evaluated from file: origin; all four original PNG byte sequences and SHA-256 digests verified, then only jsdom image attributes shortened to bound parser memory (no image rasterization)",
   "checks": [
-    "Inline JS, fonts and all four landscape images are embedded",
+    "Inline JS and fonts remain embedded; all four landscape PNGs match source bytes and SHA-256 hashes, and every water card selects its intended artwork",
     "The new field guide lists 55 entries; live search, group filters, water links and discovery cards work without DOM errors",
     "English is the default; topbar switches Dutch/English/Dutch without changing money, level or catches",
     "Individual rods are chosen in the planner, physical presets are edited in the workshop and full-loadout/method selectors are absent",
@@ -16,5 +16,23 @@
     "Weight sorting works in both directions in the release without replacing the fishing scene or changing choices and money",
     "Bulk release and mandatory processing preserve catch history"
   ],
-  "domErrors": 0
+  "domErrors": 0,
+  "verifiedArtwork": [
+    {
+      "name": "wetlands",
+      "hash": "3f67d385340b2c5c182737bce603c81aa0a56bae87e398cdda2e4a99108f9534"
+    },
+    {
+      "name": "forest-lake",
+      "hash": "a833d9fa6dbb5d0477a90bf6cab91ba6e436c76604f9381830e136f9fcfc0efc"
+    },
+    {
+      "name": "alpine-fjord",
+      "hash": "d471b4def46b19cc24364c3a735d974b7dc67b4e8da47ac43d049deebd31538b"
+    },
+    {
+      "name": "atlantic",
+      "hash": "10971ff643ce02526fccfb763a5d16d961cb0d5b8f75b038cbbc1d1585dc8c7d"
+    }
+  ]
 }
