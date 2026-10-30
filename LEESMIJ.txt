@@ -1,10 +1,14 @@
-EUROPA ANGLER — ATELIER 3.2.0
+EUROPA ANGLER — ATELIER 3.3.0
 
 SPELEN
 https://europa-angler.daanpaalvastjunkmail.workers.dev/
 Kies bovenaan NL voor Nederlands; Engels is de standaardtaal.
 
 NIEUW
+- Accounts met gebruikersnaam, wachtwoord en een eenmalige herstelcode.
+- Voortgang synchroniseren tussen telefoon en computer.
+- Een openbare top 100 en je eigen positie: prestige/XP, aantal vangsten
+  en zwaarste vis. Je gebruikersnaam en spelstatistieken zijn openbaar.
 - Een volledige visuele stijl in marineblauw, zand, teal, koper en goud.
 - Vier geschilderde landschappen en nieuwe illustraties voor vissen,
   hengels, materiaal, aas en schepen.
@@ -19,9 +23,21 @@ NIEUW
   onderdeel om de bijbehorende keuze te openen.
 
 VOORTGANG EN UPDATES
-Blijf op hetzelfde speladres en gebruik hetzelfde browserprofiel.
+Maak op je huidige apparaat via Account een account aan. Gebruik een
+wachtwoord van minimaal 12 tekens en download de eenmalige herstelcode.
+Log op het andere apparaat in op hetzelfde speladres met hetzelfde account.
+Kies bij de eerste koppeling de cloudopslag om je voortgang over te nemen.
+Bij verschillende saves kun je kiezen; er wordt eerst een back-up bewaard.
+Wacht op een geslaagde synchronisatie voordat je van apparaat wisselt.
+Online wordt iedere 30 seconden gesynchroniseerd. Offline kun je lokaal
+doorspelen. Gebruik Nu synchroniseren om het zelf direct te controleren.
+Zonder wachtwoord of herstelcode kun je niet opnieuw inloggen.
+Scores worden bij synchronisatie bijgewerkt. Omdat lokale saves bewerkbaar
+zijn, biedt de communityranglijst geen garantie tegen aangepaste scores.
+
 De onlinegame gebruikt je bestaande opslag. Schema 4 wordt automatisch
 omgezet naar schema 5, met ondersteuning voor alle nieuwe soorten.
+Versie 3.3.0 behoudt schema 5. Zonder account blijf je lokaal spelen.
 Oudere clients mogen deze nieuwere opslag niet overschrijven.
 
 Verschijnt een updatebericht, kies Save & update: je voortgang wordt
@@ -42,13 +58,18 @@ ZELF BOUWEN / OFFLINE SPELEN
 Benodigd: Node.js 22 en npm. Voer in de broncodemap uit:
   npm install
   npm run build:cloudflare
-Dit voert ook syntax-, spel- en releasetests uit.
+Dit voert ook syntax-, spel-, release- en workerd-servertests uit.
 De webbuild staat in build/web/.
 De zelfstandige offlinegame staat in build/Europa-Angler.html.
 Open dit HTML-bestand in Chrome, Edge, Firefox of Safari. Artwork en
 lettertypen zijn inbegrepen. Bewaar het bestand op een vaste plek.
 Browseropslag bij een lokaal HTML-bestand staat los van de onlinegame;
 gebruik export/import om je voortgang tussen beide over te dragen.
+Accounts en cloudsync zijn beschikbaar via de gehoste website.
+
+Accountgegevens en saves staan in een Cloudflare SQLite Durable Object.
+Behoud accounts-v1, AccountHub en ACCOUNTS in wrangler.json bij updates.
+Zie README.md en server/API.md voor de technische documentatie.
 
 ARTWORK
 De vier landschappen zijn gemaakt met de ingebouwde image-generationtool.

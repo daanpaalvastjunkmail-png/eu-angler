@@ -73,3 +73,17 @@ const checks=[],legacyText=fs.readFileSync(new URL('./fixtures/save-2.8.1.json',
  checks.push('Navigation also repairs an already-cached redirected response; unavailable cache storage falls back to the network for pages and assets, without intercepting other origins');
 }
 console.log(JSON.stringify({status:'PASS',groups:checks.length,checks},null,2));
+
+// Account data must never fall back to a cached app shell or enter offline caches.
+{
+ const source=fs.readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8'),handlers={};
+ const context={self:{addEventListener:(name,handler)=>handlers[name]=handler,location:{origin:'https://angler.example'}},URL};
+ vm.runInNewContext(source,context);
+ for(const url of ['/api/accounts/me','/api/accounts/save','/api/leaderboard?metric=xp']){
+  for(const mode of ['navigate','cors']){
+   let intercepted=false;handlers.fetch({request:{url:'https://angler.example'+url,method:'GET',mode},respondWith:()=>intercepted=true});
+   assert.equal(intercepted,false,'The service worker must leave account APIs to the network');
+  }
+ }
+ console.log('PASS: account and leaderboard APIs bypass offline service-worker routing');
+}

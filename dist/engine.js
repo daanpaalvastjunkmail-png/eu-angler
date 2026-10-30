@@ -65,11 +65,11 @@ export class IdleGame{
  get estateIncome(){const e=this.state.estate;if(!e.owned||!this.estatePopulation)return 0;const diversity=e.fish.length,weight=e.fish.reduce((n,f)=>n+f.best,0);return Math.round([0,12,35,95,230,600][e.level]*(1+diversity*.16+Math.min(this.estatePopulation,500)*.025)*(1+Math.min(weight,300)/200));}
  onChange(cb){this.listeners.add(cb);return()=>this.listeners.delete(cb);}
  emit(type,message='',extra={}){for(const cb of this.listeners)cb({type,message,...extra});}
- changed(type,message='',extra={}){this.dirty=true;this.save();this.emit(type,message,extra);return {ok:true,message,...extra};}
+ changed(type,message='',extra={}){this.beforeUserSave?.();this.dirty=true;this.save();this.emit(type,message,extra);return {ok:true,message,...extra};}
  fail(message){return {ok:false,message};}
  snapshot(){return {caught:this.state.stats.caught,xp:this.state.xp,money:this.state.money,missed:this.state.stats.missedBites,craft:this.state.stats.crafted,estate:this.state.estate.bank,fleet:this.state.fleetBank};}
  difference(before,seconds){return {seconds,processed:Math.min(seconds,this.offlineCap),catches:this.state.stats.caught-before.caught,missed:this.state.stats.missedBites-(before.missed||0),xp:this.state.xp-before.xp,money:cents(this.state.money-before.money),crafted:this.state.stats.crafted-before.craft,estate:cents(this.state.estate.bank-before.estate),fleet:cents(this.state.fleetBank-before.fleet)};}
- save(){try{if(!this.storage||!this.store.write(JSON.stringify(packSave(this.state)))){this.storageError=true;return false;}this.storageError=false;this.dirty=false;this.lastSave=this.now();return true;}catch{this.storageError=true;return false;}}
+ save(){try{this.beforePersist?.();if(!this.storage||!this.store.write(JSON.stringify(packSave(this.state)))){this.storageError=true;return false;}this.storageError=false;this.dirty=false;this.lastSave=this.now();return true;}catch{this.storageError=true;return false;}}
  sync(){this.advanceTo(this.now());}
  roll(){let x=this.state.seed|0;x^=x<<13;x^=x>>>17;x^=x<<5;this.state.seed=x>>>0;return (x>>>0)/4294967296;}
  addXp(amount){const old=this.level;this.state.xp+=Math.round(Math.max(0,amount)*(1+this.state.legacy.wisdom*.05));this.state.highestLevel=Math.max(this.state.highestLevel,this.level);if(this.level>old)this.pendingLevel=this.level;}
@@ -317,7 +317,7 @@ export class IdleGame{
   this.emit('tick');if(now-this.lastSave>=5000)this.save();
  }
  exportSave(){if(this.store.blocked){const original=this.storage?.getItem(SAVE_KEY)||this.storage?.getItem(BACKUP_KEY)||this.storage?.getItem(LEGACY_KEY);if(original)return original;}this.sync();this.save();return JSON.stringify({game:'Europa Angler Idle',exportedAt:new Date(this.now()).toISOString(),save:this.state},null,2);}
- importSave(text){let value;try{const x=JSON.parse(text);value=this.validate(x.save||x);}catch{return this.fail('Dit bestand bevat geen geldige Europa Angler Idle-opslag.');}const previous=this.state,storeState={last:this.store.last,blocked:this.store.blocked,recovered:this.store.recovered,error:this.store.error};this.store.allowImport();this.state=value;if(this.storage&&!this.save()){this.state=previous;Object.assign(this.store,storeState);return this.fail('Importeren lukt niet: onvoldoende opslagruimte. Je vorige spel is behouden.');}const gap=Math.max(0,(this.now()-value.lastAt)/1000),before=this.snapshot();this.advanceTo(this.now());this.welcome=gap>=60?this.difference(before,gap):null;return this.changed('import','Je opgeslagen imperium is geladen.');}
+ importSave(text){let value;try{const x=JSON.parse(text);value=this.validate(x.save||x);}catch{return this.fail('Dit bestand bevat geen geldige Europa Angler Idle-opslag.');}this.beforeUserSave?.();const previous=this.state,storeState={last:this.store.last,blocked:this.store.blocked,recovered:this.store.recovered,error:this.store.error};this.store.allowImport();this.state=value;if(this.storage&&!this.save()){this.state=previous;Object.assign(this.store,storeState);return this.fail('Importeren lukt niet: onvoldoende opslagruimte. Je vorige spel is behouden.');}const gap=Math.max(0,(this.now()-value.lastAt)/1000),before=this.snapshot();this.advanceTo(this.now());this.welcome=gap>=60?this.difference(before,gap):null;return this.changed('import','Je opgeslagen imperium is geladen.');}
  journal(id='latest'){return resolveJournal(this,id);}
  sessionRows(id='latest'){return sessionRows(this,id);}
  chooseCatches(ids,action){return chooseCatches(this,ids,action);}

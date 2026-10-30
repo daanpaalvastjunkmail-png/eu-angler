@@ -63,7 +63,7 @@ for(const id of ['loadouts','waters','sessions','contests','shop','craft','estat
  page(id);assert($('#main').innerHTML.length>300);
  assert.equal(Boolean(document.querySelector('#forecast-root')),id==='statistics','Forecasts must appear only on Statistics');
 }
-assert.equal(document.querySelectorAll('.nav-item').length,13);
+assert.equal(document.querySelectorAll('.nav-item').length,15);
 checks.push('All twelve pages navigate through the actual app, and only Statistics renders the forecast section');
 
 game.state.xp=xpAt(300);game.state.money=1e9;game.state.legacy.count=3;

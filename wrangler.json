@@ -1,9 +1,17 @@
 {
   "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
   "name": "europa-angler",
+  "main": "server/index.js",
   "compatibility_date": "2026-10-28",
+  "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "assets": {
-    "directory": "./build/web"
-  }
+    "directory": "./build/web",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "durable_objects": {
+    "bindings": [{"name": "ACCOUNTS", "class_name": "AccountHub"}]
+  },
+  "migrations": [{"tag": "accounts-v1", "new_sqlite_classes": ["AccountHub"]}]
 }
