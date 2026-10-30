@@ -20,7 +20,7 @@ function setup(level=1){let now=1800000000000;const storage=memoryStorage(),g=ne
  checks.push('Training gates two T1 at 10, T1+T2 at 15 and two T2 at 18; reel tier counts and six T7 require 156 points');
 }
 {
- const {g}=setup(10);const p=clone(g.state.rodPresets[0]);assert(g.setSessionRods([{...p.rod,sourcePresetId:p.id}]).ok);assert(g.saveRodPreset(p.id,'My maize feeder',{...p.rod,bait:'corn'},p.items).ok);assert(g.state.selectedRods.every(r=>r.sourcePresetId!==p.id||r.bait==='corn'));
+ const {g}=setup(10);const p=clone(g.state.rodPresets[0]);assert(g.setSessionRods([{...p.rod,sourcePresetId:p.id}]).ok);assert(g.saveRodPreset(p.id,'My maize feeder',{...p.rod,bait:'corn'},p.items).ok);assert(g.state.selectedRods.every(r=>r.sourcePresetId!==p.id||r.bait===p.rod.bait));
  g.state.rodSlots=2;assert(!g.setSessionRods([{...p.rod,bait:'corn',sourcePresetId:p.id},{...p.rod,bait:'corn',sourcePresetId:p.id}]).ok);
  assert(g.deleteRodPreset(p.id).ok);assert(g.state.selectedRods.every(r=>r.sourcePresetId!==p.id));assert(Object.values(p.items).every(id=>!ownerOf(g.state,id)));assert(!g.quote().valid);assert(g.saveRodPreset(null,'Rebuilt',p.rod,p.items).ok);assert(g.validate(g.state).selectedRods.length===0);
  checks.push('Edits update selected rods; duplicate deployment is rejected; dismantling clears the selection and releases parts while preserving an empty plan');

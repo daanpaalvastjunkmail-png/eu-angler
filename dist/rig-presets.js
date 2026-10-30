@@ -1,6 +1,10 @@
 import {STYLES,GEAR,SUPPLIES,COMBOS,RECIPES} from './data.js';
 
 export const ROD_FIELDS=['style','rod','reel','line','hook','terminal','bait','combo','liquid','crafted','indicator','baitSize'];
+// Bait travels with a trip, while a preset identifies the assembled hardware.
+// Keep the legacy fields in snapshots so schema 5 saves remain compatible.
+export const BAIT_FIELDS=['bait','baitSize','combo','liquid'];
+export const HARDWARE_FIELDS=ROD_FIELDS.filter(field=>!BAIT_FIELDS.includes(field));
 export const MAX_ROD_PRESETS=120;
 const gear=Object.fromEntries(GEAR.map(x=>[x.id,x]));
 const supplies=Object.fromEntries(SUPPLIES.map(x=>[x.id,x]));

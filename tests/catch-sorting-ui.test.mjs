@@ -98,7 +98,8 @@ checks.push('Load more retains sorting; session history and current catches shar
 // Put the sole pending choice outside the current 24-row page before stopping.
 page('sessions');change('[data-catch-choice="sort-fish-14"]','sell');change('[data-catch-choice="sort-fish-1"]','');
 page('home');assert(!document.querySelector('[data-catch-choice="sort-fish-1"]'));
-click('[data-action="stop-session"]');click('[data-modal-action="1"]');
+click('[data-action="stop-session"]');
+assert(!$('#modal').hidden);assert.equal($('#modal').dataset.kind,'checkout');click('#close-modal');
 assert.equal(game.state.session,null);assert(game.awaitingSettlement);assert.equal(game.state.net.length,26);
 assertOrder('value','asc',24,'checkout');assert(!document.querySelector('[data-catch-choice="sort-fish-1"]'));
 assert($('[data-action="settle-session"]').disabled,'A hidden pending fish must still block mandatory checkout');

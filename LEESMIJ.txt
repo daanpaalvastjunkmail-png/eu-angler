@@ -1,10 +1,15 @@
-EUROPA ANGLER — ATELIER 3.3.0
+EUROPA ANGLER — ATELIER 3.4.0
 
 SPELEN
 https://europa-angler.daanpaalvastjunkmail.workers.dev/
 Kies bovenaan NL voor Nederlands; Engels is de standaardtaal.
 
 NIEUW
+- Aas, aasgrootte en liquid per hengel bij Plan je sessie.
+- Aascombinaties staan in hetzelfde aasmenu.
+- Tijdens het vissen per hengel Aas wisselen, met kosten vooraf.
+- Timer en stopknop bovenaan in het waterbeeld.
+- Direct vangsten afhandelen na stoppen of automatisch sessie-einde.
 - Accounts met gebruikersnaam, wachtwoord en een eenmalige herstelcode.
 - Voortgang synchroniseren tussen telefoon en computer.
 - Een openbare top 100 en je eigen positie: prestige/XP, aantal vangsten
@@ -19,7 +24,7 @@ NIEUW
 - Maximaal zes hengels binnen de level- en scholingsgrenzen:
   maximaal twee dobber-, vier feeder- en vier karperhengels.
 - Een werkplaats met duidelijke tekeningen van hengel, molen, lijn,
-  lood of voerkorf, onderlijn, haak en aas. Klik op een genummerd
+  lood of voerkorf, onderlijn en haak. Klik op een genummerd
   onderdeel om de bijbehorende keuze te openen.
 
 VOORTGANG EN UPDATES
@@ -37,7 +42,7 @@ zijn, biedt de communityranglijst geen garantie tegen aangepaste scores.
 
 De onlinegame gebruikt je bestaande opslag. Schema 4 wordt automatisch
 omgezet naar schema 5, met ondersteuning voor alle nieuwe soorten.
-Versie 3.3.0 behoudt schema 5. Zonder account blijf je lokaal spelen.
+Versie 3.4.0 behoudt schema 5. Zonder account blijf je lokaal spelen.
 Oudere clients mogen deze nieuwere opslag niet overschrijven.
 
 Verschijnt een updatebericht, kies Save & update: je voortgang wordt

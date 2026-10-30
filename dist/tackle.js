@@ -1,9 +1,12 @@
 import {GEAR} from './data.js';
-import {rodSnapshot,ROD_FIELDS} from './rig-presets.js';
+import {rodSnapshot,ROD_FIELDS,BAIT_FIELDS,HARDWARE_FIELDS} from './rig-presets.js';
 export const PARTS=['rod','reel','line','hook','terminal','indicator'];
 export const SCHEMA_VERSION=5;
 const gear=Object.fromEntries(GEAR.map(i=>[i.id,i])),clone=x=>JSON.parse(JSON.stringify(x));
-export const sameSetup=(a,b)=>!!a&&!!b&&ROD_FIELDS.every(k=>(a[k]??null)===(b[k]??null));
+export const sameSetup=(a,b)=>!!a&&!!b&&HARDWARE_FIELDS.every(k=>(a[k]??null)===(b[k]??null));
+// Pre-inventory saves used bait to distinguish whole designs. Preserve their
+// original allocation order once, rather than assigning another design's rod.
+const sameLegacySetup=(a,b)=>!!a&&!!b&&ROD_FIELDS.every(k=>(a[k]??null)===(b[k]??null));
 export const ownerOf=(state,itemId,except=null)=>state.rodPresets.find(p=>p.id!==except&&p.assembled&&Object.values(p.items||{}).includes(itemId));
 export function addTackle(state,gearId,quantity=1,starter=false){const out=[];for(let n=0;n<quantity;n++){let id;do{id='tackle_'+state.serial++;}while(state.tackleItems.some(i=>i.id===id));const item={id,gearId,condition:100,starter:starter&&n===0};state.tackleItems.push(item);out.push(item);}state.gear[gearId]=state.tackleItems.filter(i=>i.gearId===gearId).length;return out;}
 export function availableItems(state,gearId,except=null){return state.tackleItems.filter(i=>i.gearId===gearId&&i.condition>0&&!ownerOf(state,i.id,except));}
@@ -22,7 +25,7 @@ export function assemblyError(state,preset){
  for(const part of PARTS){if(!preset.rod[part])continue;const item=state.tackleItems.find(i=>i.id===preset.items?.[part]);if(!item||item.gearId!==preset.rod[part]||ownerOf(state,item.id,preset.id))return 'Een onderdeel ontbreekt of is al bezet.';if(item.condition<=0)return 'Deze hengel is gebroken. Repareer hem of vervang de hengel.';}
  return null;
 }
-export function refreshSelectionReferences(state){state.selectedRods=state.selectedRods.flatMap(r=>{const p=state.rodPresets.find(p=>p.id===r.sourcePresetId);return p?[{...clone(p.rod),sourcePresetId:p.id,slot:r.slot}]:[];});}
+export function refreshSelectionReferences(state){state.selectedRods=state.selectedRods.flatMap(r=>{const p=state.rodPresets.find(p=>p.id===r.sourcePresetId),bait=Object.fromEntries(BAIT_FIELDS.filter(field=>Object.hasOwn(r,field)).map(field=>[field,r[field]]));return p?[{...clone(p.rod),...bait,sourcePresetId:p.id,slot:r.slot}]:[];});}
 export function migrateTackle(state,raw,legacyLoadouts=[]){
  if(Number(raw.schemaVersion)>SCHEMA_VERSION)throw Error('NEWER_SAVE');
  if(Number(raw.schemaVersion)>=3){
@@ -36,7 +39,7 @@ export function migrateTackle(state,raw,legacyLoadouts=[]){
   // Preserve existing names/designs and link identical setups across alternate loadouts.
   const order=[state.session?.loadout,{name:'Gekozen hengels',rods:state.selectedRods},...legacyLoadouts].filter(Boolean);
   const priority=[];for(const l of order){const used=new Set();for(const [i,r]of l.rods.entries()){
-   let p=state.rodPresets.find(p=>p.id===r.sourcePresetId&&sameSetup(p.rod,r)&&!used.has(p.id))||state.rodPresets.find(p=>sameSetup(p.rod,r)&&!used.has(p.id));
+   let p=state.rodPresets.find(p=>p.id===r.sourcePresetId&&sameLegacySetup(p.rod,r)&&!used.has(p.id))||state.rodPresets.find(p=>sameLegacySetup(p.rod,r)&&!used.has(p.id));
    if(!p){p={id:'rig_'+state.serial++,name:`${l.name} · ${i+1}`,rod:rodSnapshot(r)};state.rodPresets.push(p);}r.sourcePresetId=p.id;used.add(p.id);if(!priority.includes(p))priority.push(p);
   }}
   for(const p of [...priority,...state.rodPresets.filter(p=>!priority.includes(p))]){

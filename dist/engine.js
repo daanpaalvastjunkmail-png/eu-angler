@@ -4,7 +4,7 @@ import {SCHEMA_VERSION,PARTS,migrateTackle,addTackle,assemblyItems,assemblyError
 import {encounterPool,encounterStory,isCrayfish,canStockSpecies,releaseBonus} from './catch-model.js';
 import {packSave,unpackSave} from './save-codec.js';
 import {SESSION_CAP,OFFLINE_HOURS,permitCost,charterCost,fishSaleValue} from './economy.js';
-import {MAX_ROD_PRESETS,rodSnapshot,seedRodPresets,cleanRodPresets,slotRods,cleanLoadoutRods} from './rig-presets.js';
+import {MAX_ROD_PRESETS,BAIT_FIELDS,rodSnapshot,seedRodPresets,cleanRodPresets,slotRods,cleanLoadoutRods} from './rig-presets.js';
 import {recordCatch,markDisposition,closeJournal,resolveJournal,sessionRows,chooseCatches,settleSession,cleanJournals,cleanHistory,encodeCatch} from './journal.js';
 import {VERSION,STYLES,SLOT_LEVELS,SLOT_COSTS,GEAR,HOOKS,SUPPLIES,BAITS,COMBOS,SPECIES,WATERS,RECIPES,TOURNAMENTS,UPGRADES,BOATS,ESTATE_PRICE,ESTATE_UPGRADE_BASE} from './data.js';
 import {forecastRod,forecastLoadout} from './forecast.js';
@@ -87,15 +87,26 @@ export class IdleGame{
  expectedRod(r,w){return forecastRod(this,r,w).auto;}
  forecast(l=this.loadout,w=this.water){return forecastLoadout(this,l,w);}
  setFishingMode(mode){this.sync();if(!['idle','active'].includes(mode))return this.fail('Deze vismodus bestaat niet.');this.state.settings.fishingMode=mode;if(this.state.session)this.state.session.mode=mode;return this.changed('angling','',{});}
- validRod(r){
+ validBait(r){
+  const bait=supplies[r?.bait];if(typeof r?.bait!=='string'||!bait?.attracts||bait.level>this.level)return 'Dit aas is nog niet beschikbaar.';
+  if(!['small','normal','large'].includes(r.baitSize??'normal'))return 'Kies een geldige aasgrootte.';
+  const c=COMBOS.find(c=>c.id===r.combo);if(!c||c.level>this.level)return 'Deze aascombinatie is nog niet vrijgespeeld.';
+  if(c.requires&&(!c.requires.includes(r.bait)||c.requires.some(id=>supplies[id].level>this.level)))return 'Kies voor deze cocktail een van de bijbehorende aassoorten.';
+  if(r.liquid!==null&&r.liquid!==undefined&&(typeof r.liquid!=='string'||!supplies[r.liquid]?.bonus||supplies[r.liquid].level>this.level))return 'Deze liquid is nog niet vrijgespeeld.';
+  return null;
+ }
+ baitPatch(rod,patch){
+  if(!patch||typeof patch!=='object'||Array.isArray(patch)||Reflect.ownKeys(patch).some(key=>!BAIT_FIELDS.includes(key)))return {error:'Je kunt hier alleen aas, aasgrootte en liquid wijzigen.'};
+  if(Object.keys(patch).some(key=>patch[key]===undefined)||Object.hasOwn(patch,'baitSize')&&!['small','normal','large'].includes(patch.baitSize)||Object.hasOwn(patch,'liquid')&&patch.liquid!==null&&typeof patch.liquid!=='string')return {error:'Kies geldige aasinstellingen.'};
+  const next={...rod,baitSize:rod.baitSize??'normal',combo:rod.combo??'none',liquid:rod.liquid??null,...patch},error=this.validBait(next);
+  return error?{error}:{rod:next,changed:BAIT_FIELDS.some(field=>(rod[field]??(field==='baitSize'?'normal':field==='combo'?'none':null))!==(next[field]??null))};
+ }
+ validRod(r,{includeBait=true}={}){
   if(!r||!STYLES.some(s=>s.id===r.style)||gear[r.rod]?.style!==r.style)return 'Deze visstijl bestaat niet.';
   if((STYLES.find(s=>s.id===r.style).level||1)>this.level)return 'Zeevissen opent op level 120.';
   for(const slot of ['rod','reel','line','hook','terminal']){const i=gear[r[slot]];if(!i||i.category!==slot||(i.style!=='all'&&i.style!==r.style)||!(this.state.gear[i.id]>0)||i.level>this.level)return `Je bezit geen passende ${slot}.`;}
   if(r.indicator){const signal=gear[r.indicator];if(!signal||signal.category!=='indicator'||signal.style!==r.style||!this.state.gear[signal.id]||signal.level>this.level)return 'Je bezit geen passende, vrijgespeelde beetmelder.';}
-  const bait=supplies[r.bait];if(!bait?.attracts||bait.level>this.level)return 'Dit aas is nog niet beschikbaar.';
-  const c=COMBOS.find(c=>c.id===r.combo);if(!c||c.level>this.level)return 'Deze aascombinatie is nog niet vrijgespeeld.';
-  if(c.requires&&!c.requires.includes(r.bait))return 'Kies voor deze cocktail een van de bijbehorende aassoorten.';
-  if(r.liquid&&(!supplies[r.liquid]?.bonus||supplies[r.liquid].level>this.level))return 'Deze liquid is nog niet vrijgespeeld.';
+  if(includeBait){const error=this.validBait(r);if(error)return error;}
   if(r.crafted&&(!recipes[r.crafted]||recipes[r.crafted].level>this.level))return 'Deze zelfgemaakte rig is nog niet beschikbaar.';
   return null;
  }
@@ -107,7 +118,7 @@ export class IdleGame{
    const p=r.sourcePresetId?this.state.rodPresets.find(p=>p.id===r.sourcePresetId):this.state.rodPresets.find(p=>p.assembled&&sameSetup(p.rod,r)&&!used.has(p.id));
    if(!p||!sameSetup(p.rod,r))return 'Bouw en bewaar deze hengel eerst voordat je hem voor een sessie kiest.';
    if(used.has(p.id))return 'Dezelfde fysieke hengel kan niet op twee plaatsen tegelijk staan.';used.add(p.id);
-   const error=this.validRod(p.rod)||assemblyError(this.state,p);if(error)return error;
+   const error=this.validRod(r)||assemblyError(this.state,p);if(error)return error;
    styles[r.style]=(styles[r.style]||0)+1;if(styles[r.style]>STYLES.find(s=>s.id===r.style).cap)return `Maximaal ${STYLES.find(s=>s.id===r.style).cap} hengels voor ${r.style}.`;
   }
   const t=trainingQuote(this.level,l.rods);if(!t.allowed)return `Deze combinatie vraagt ${t.used} scholingspunten; je hebt ${t.capacity}. Beschikbaar vanaf level ${t.requiredLevel}.`;
@@ -143,12 +154,52 @@ export class IdleGame{
   if(!presetId){this.sync();if(this.state.session)return this.fail('Je sessie loopt. Kies je volgende hengels zodra deze is afgelopen.');this.state.selectedRods=this.state.selectedRods.filter(r=>r.slot!==slot);return this.changed('plan');}
   const choice=this.sessionRodAvailability(slot,presetId);return choice.ok?this.setSessionRods(choice.rods):choice;
  }
+ setPlannedBait(slot,patch){
+  this.sync();if(this.store.blocked)return this.fail('Je opslag is beschermd. Laad je geldige voortgang voordat je verder speelt.');
+  if(this.state.session)return this.fail('Je sessie loopt. Wissel het aas bij de actieve hengel.');
+  if(!Number.isInteger(slot)||slot<0||slot>=this.selectionCapacity)return this.fail('Deze hengelplaats is nog niet vrijgespeeld of gekocht.');
+  const index=this.state.selectedRods.findIndex(r=>r.slot===slot);if(index<0)return this.fail('Kies eerst een hengel voor deze plaats.');
+  const result=this.baitPatch(this.state.selectedRods[index],patch);if(result.error)return this.fail(result.error);
+  const error=this.validateRodSelection({rods:this.state.selectedRods.map((r,i)=>i===index?result.rod:r)});if(error)return this.fail(error);
+  if(!result.changed)return {ok:true,message:'Dit aas is al gekozen.'};
+  this.state.selectedRods[index]=result.rod;return this.changed('plan','Aas gekozen voor deze hengel.');
+ }
+ sessionBaitQuote(index,patch){
+  const invalid=(code,error)=>({valid:false,code,error,changed:false,affordable:false,total:0,suppliesCost:0,required:{},missing:{},costs:{},rates:{},remaining:0});
+  if(this.store.blocked)return invalid('PROTECTED_SAVE','Je opslag is beschermd. Laad je geldige voortgang voordat je verder speelt.');
+  const session=this.state.session;if(!session)return invalid('NO_SESSION','Er loopt geen sessie.');
+  if(!Number.isInteger(index)||index<0||index>=session.loadout.rods.length)return invalid('INVALID_ROD','Deze actieve hengel bestaat niet.');
+  const rod=session.loadout.rods[index],runtime=session.rods[index];
+  if(runtime.phase==='broken'||this.rodItem(rod)?.condition<=0)return invalid('BROKEN_ROD','Deze hengel is gebroken. Repareer hem na je sessie.');
+  if(['nibble','bite','rescue'].includes(runtime.phase))return invalid('BITE_ACTIVE','Er is een beet op deze hengel. Handel die eerst af voordat je aas wisselt.');
+  const result=this.baitPatch(rod,patch);if(result.error)return invalid('INVALID_BAIT',result.error);
+  const error=this.validRod(result.rod);if(error)return invalid('INVALID_BAIT',error);
+  const rods=session.loadout.rods.map((r,i)=>i===index?result.rod:r).filter((r,i)=>session.rods[i].phase!=='broken'),rates=this.supplyRates({rods});
+  const remaining=Math.max(0,session.remaining),required={},missing={},costs={};
+  // Stock is shared by every line. Quote the entire remainder so switching one
+  // rod cannot spend supplies that the other rods still need. No second permit,
+  // charter or reserve purchase; previously bought bait remains in inventory.
+  for(const [id,rate]of Object.entries(rates)){required[id]=Math.ceil(rate*remaining/60-1e-9);missing[id]=result.changed?Math.max(0,Math.ceil(required[id]-(this.state.stock[id]||0)-1e-9)):0;costs[id]=cents(missing[id]*supplies[id].price);}
+  const total=cents(Object.values(costs).reduce((a,b)=>a+b,0));
+  return {valid:true,code:null,error:null,changed:result.changed,affordable:total<=this.state.money,total,suppliesCost:total,required,missing,costs,rates,rod:result.rod,remaining};
+ }
+ changeSessionBait(index,patch){
+  this.sync();const q=this.sessionBaitQuote(index,patch);if(!q.valid)return this.fail(q.error);if(!q.affordable)return this.fail('Onvoldoende euro voor het aas tijdens de resterende sessie.');
+  if(!q.changed)return {ok:true,message:'Dit aas is al gekozen.',cost:0,rod:clone(q.rod)};
+  const session=this.state.session;this.state.money=cents(this.state.money-q.total);
+  for(const [id,quantity]of Object.entries(q.missing))if(quantity)this.state.stock[id]=(this.state.stock[id]||0)+quantity;
+  session.loadout.rods[index]=q.rod;session.rates=q.rates;session.cost=cents(session.cost+q.total);
+  // Retain this rod's choice for the next trip without editing its assembly.
+  const planned=this.state.selectedRods.find(r=>r.sourcePresetId===q.rod.sourcePresetId);if(planned)for(const field of BAIT_FIELDS)planned[field]=q.rod[field];
+  this.scheduleRod(index);session.rods[index].lastOutcome='Aas gewisseld. Deze hengel is opnieuw ingeworpen.';
+  return this.changed('session-bait','Aas gewisseld en hengel opnieuw ingeworpen.',{cost:q.total,rod:clone(q.rod)});
+ }
  setPlan(plan){this.sync();this.state.plan=normalizePlan(plan,this.state.plan);return this.changed('plan');}
- saveRodPreset(id,name,rod,requestedItems=null){this.sync();if(this.assemblyBusy(id))return this.fail('Deze hengel is in gebruik. Beëindig eerst je sessie.');const r=rodSnapshot(rod),error=this.validRod(r);if(error)return this.fail(error);const index=this.state.rodPresets.findIndex(p=>p.id===id);if(id&&index<0)return this.fail('Deze hengelsetup bestaat niet.');if(index<0&&this.state.rodPresets.length>=MAX_ROD_PRESETS)return this.fail('Je kunt maximaal 120 hengelsetups bewaren.');const allocation=assemblyItems(this.state,r,id,requestedItems);if(allocation.error)return this.fail(allocation.error);let presetId=id;if(!presetId)do{presetId=`rig_${this.state.serial++}`;}while(this.state.rodPresets.some(p=>p.id===presetId));const preset={id:presetId,name:String(name||'Mijn hengel').trim().slice(0,45)||'Mijn hengel',rod:r,items:allocation.items,assembled:true};if(index<0)this.state.rodPresets.push(preset);else this.state.rodPresets[index]=preset;refreshSelectionReferences(this.state);const cap=STYLES.find(st=>st.id===preset.rod.style).cap,overLimit=this.state.selectedRods.filter(r=>r.style===preset.rod.style).length>cap;
+ saveRodPreset(id,name,rod,requestedItems=null){this.sync();if(this.assemblyBusy(id))return this.fail('Deze hengel is in gebruik. Beëindig eerst je sessie.');const r=rodSnapshot(rod),error=this.validRod(r,{includeBait:false});if(error)return this.fail(error);const index=this.state.rodPresets.findIndex(p=>p.id===id);if(id&&index<0)return this.fail('Deze hengelsetup bestaat niet.');if(index<0&&this.state.rodPresets.length>=MAX_ROD_PRESETS)return this.fail('Je kunt maximaal 120 hengelsetups bewaren.');const allocation=assemblyItems(this.state,r,id,requestedItems);if(allocation.error)return this.fail(allocation.error);let presetId=id;if(!presetId)do{presetId=`rig_${this.state.serial++}`;}while(this.state.rodPresets.some(p=>p.id===presetId));const preset={id:presetId,name:String(name||'Mijn hengel').trim().slice(0,45)||'Mijn hengel',rod:r,items:allocation.items,assembled:true};if(index<0)this.state.rodPresets.push(preset);else this.state.rodPresets[index]=preset;refreshSelectionReferences(this.state);const cap=STYLES.find(st=>st.id===preset.rod.style).cap,overLimit=this.state.selectedRods.filter(r=>r.style===preset.rod.style).length>cap;
   if(overLimit)this.state.selectedRods=this.state.selectedRods.filter(r=>r.sourcePresetId!==preset.id);
   return this.changed('rigpreset',overLimit?'Hengel opgeslagen. Hij is uit je sessiekeuze gehaald omdat de stijlgrens is bereikt.':'Hengel gebouwd. De onderdelen zijn nu bezet.',{preset:clone(preset)});}
  deleteRodPreset(id){this.sync();if(this.assemblyBusy(id))return this.fail('Deze hengel is in gebruik. Beëindig eerst je sessie.');const index=this.state.rodPresets.findIndex(p=>p.id===id);if(index<0)return this.fail('Deze hengelsetup bestaat niet.');this.state.rodPresets.splice(index,1);this.state.selectedRods=this.state.selectedRods.filter(r=>r.sourcePresetId!==id);return this.changed('rigpreset','Hengel uit elkaar gehaald. Onderdelen zijn vrij en de hengel is uit je sessiekeuze verwijderd.');}
- resolveRodPreset(id){const preset=this.state.rodPresets.find(p=>p.id===id);if(!preset)return this.fail('Deze hengelsetup bestaat niet.');const error=this.validRod(preset.rod)||assemblyError(this.state,preset);return error?this.fail(error):{ok:true,rod:{...clone(preset.rod),sourcePresetId:id},preset:clone(preset)};}
+ resolveRodPreset(id){const preset=this.state.rodPresets.find(p=>p.id===id);if(!preset)return this.fail('Deze hengelsetup bestaat niet.');const error=this.validRod(preset.rod,{includeBait:false})||assemblyError(this.state,preset);if(error)return this.fail(error);const selected=this.state.selectedRods.find(r=>r.sourcePresetId===id),bait=selected||preset.rod,rod={...clone(preset.rod),...Object.fromEntries(BAIT_FIELDS.map(field=>[field,bait[field]])),sourcePresetId:id};if(this.validBait(rod)){const defaults=starterRod(rod.style);for(const field of BAIT_FIELDS)rod[field]=defaults[field];}return {ok:true,rod,preset:clone(preset)};}
 
  setWaterPanel(id,collapsed){if(!['catches','planner','activity'].includes(id))return this.fail('Deze instelling bestaat niet.');this.state.settings.waterPanels??={};this.state.settings.waterPanels[id]=collapsed===true;return this.changed('water-panel');}
  setLanguage(code){this.sync();if(!['en','nl'].includes(code))return this.fail('Deze taal bestaat niet.');this.state.settings.language=code;return this.changed('language');}

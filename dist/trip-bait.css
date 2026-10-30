@@ -1,0 +1,60 @@
+/* Bait belongs to a trip; the workshop stays dedicated to physical tackle. */
+.assembly-hardware-extra {grid-template-columns:minmax(0,1fr);}
+.trip-bait-section {margin:22px 0;padding:22px 0;border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);min-width:0;}
+.trip-bait-heading {display:flex;gap:12px;align-items:flex-start;margin-bottom:18px;}
+.trip-bait-heading>span {display:grid;place-items:center;flex:0 0 32px;height:32px;border:1px solid #df987642;border-radius:50%;color:var(--copper);font-size:23px;line-height:1;}
+.trip-bait-heading h3 {font-size:15px;color:var(--text);margin:0 0 6px;}
+.trip-bait-heading p,.trip-bait-lock,.trip-bait-empty {margin:0;color:var(--muted);font-size:12px;line-height:1.7;}
+.trip-bait-lock {border-left:2px solid var(--gold);padding:9px 12px;margin-bottom:14px;background:#e6bc6808;}
+.trip-bait-rods {display:flex;flex-direction:column;gap:14px;border:0;margin:0;padding:0;min-width:0;}
+.trip-bait-rods:disabled select {opacity:.6;}
+.trip-bait-rod {min-width:0;padding:16px;border:1px solid #b5cadc29;border-radius:12px;background:linear-gradient(150deg,#1c3447,#112338);}
+.trip-bait-rod>header {display:flex;align-items:center;gap:11px;margin-bottom:17px;}
+.trip-bait-rod>header>div {flex:1;min-width:0;}
+.trip-bait-rod>header strong {display:block;font-size:12px;line-height:1.6;overflow-wrap:anywhere;}
+.trip-bait-rod>header small {display:block;font-size:10px;color:var(--muted);line-height:1.6;overflow-wrap:anywhere;}
+.trip-bait-rod-number {display:grid;place-items:center;flex:0 0 29px;width:29px;height:29px;border-radius:50%;background:#7dd1c20c;border:1px solid #7dd1c238;color:var(--lime);font-size:11px;font-variant-numeric:tabular-nums;}
+.trip-bait-mark {position:relative;display:block;flex:0 0 34px;width:34px;height:34px;border:1px solid #df987636;border-radius:50%;background:radial-gradient(circle,#df987622,transparent 75%);}
+.trip-bait-mark i {position:absolute;display:block;width:11px;height:13px;border-radius:48% 48% 40% 40%;background:var(--bait-tone,#e6bc68);left:7px;top:10px;transform:rotate(-25deg);box-shadow:inset 2px 2px 0 #ffffff30,1px 2px 3px #0005;}
+.trip-bait-mark i+i {left:17px;top:9px;transform:rotate(25deg);}
+.trip-bait-mark .bait-mix-piece {left:12px;top:15px;background:#df9876;transform:rotate(8deg);}
+.trip-bait-fields {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;min-width:0;}
+.trip-bait-field {display:flex;flex-direction:column;gap:7px;min-width:0;margin:0;}
+.trip-bait-field>span {font-size:10px;font-weight:500;letter-spacing:.45px;color:#b6c7d2;}
+.trip-bait-primary {grid-column:1/-1;}
+.trip-bait-field select {display:block;width:100%;max-width:100%;min-width:0;min-height:44px;padding:10px 11px;background:#0e2133;color:var(--text);border:1px solid #a9cbd736;border-radius:8px;font-size:12px;white-space:nowrap;text-overflow:ellipsis;}
+.trip-bait-field select:focus-visible {outline-color:var(--copper);outline-offset:2px;}
+.trip-bait-stock {font-size:10px;color:var(--muted);margin:12px 0 0;line-height:1.9;overflow-wrap:anywhere;}
+.trip-bait-stock strong {font-weight:500;color:#d0ddda;white-space:nowrap;}
+.trip-bait-warning {margin:11px 0 0;padding:8px 10px;border-left:2px solid var(--copper);color:var(--copper);font-size:11px;line-height:1.6;background:#df98760a;}
+.live-bait-control {min-width:0;border-top:1px solid #b5cadc22;margin-top:3px;padding-top:13px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;}
+.live-bait-current {display:flex;flex:1 1 150px;gap:10px;align-items:center;min-width:0;}
+.live-bait-current>div {min-width:0;}
+.live-bait-current>div>span {display:block;font-size:8px;letter-spacing:1.15px;color:#819cac;line-height:1.5;}
+.live-bait-current strong {display:block;font-size:12px;font-weight:500;line-height:1.6;color:var(--text);overflow-wrap:anywhere;}
+.live-bait-current small {display:block;font-size:10px;color:var(--muted);line-height:1.6;overflow-wrap:anywhere;}
+.scene-rod-control .live-bait-open,.live-bait-open {display:flex;align-items:center;justify-content:center;gap:14px;min-height:40px;border:1px solid #df98764a;background:#df98760c;color:#edbe9f;border-radius:8px;padding:9px 12px;font-size:11px;white-space:normal;line-height:1.5;}
+.live-bait-open>span {font-size:15px;}
+.live-bait-open:not(:disabled):hover {border-color:#df98769c;background:#df98761b;}
+.live-bait-editor {min-width:0;}
+.live-bait-editor>header {display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;}
+.live-bait-editor>header>div {min-width:0;}
+.live-bait-editor>header h3 {font-size:16px;line-height:1.5;margin:0 0 5px;overflow-wrap:anywhere;}
+.live-bait-editor>header p {margin:0;font-size:12px;color:var(--muted);line-height:1.7;}
+.live-bait-before {margin:0 0 18px;padding:12px 14px;background:#7dd1c209;border:1px solid #7dd1c220;border-radius:8px;font-size:11px;color:var(--muted);line-height:1.8;}
+.live-bait-before strong {display:block;font-size:13px;font-weight:500;color:var(--text);}
+.live-bait-quote-title {font-size:12px;font-weight:500;color:var(--text);margin:22px 0 0;padding-top:20px;border-top:1px solid var(--border2);}
+.live-bait-price {display:flex;flex-wrap:wrap;gap:15px;align-items:center;justify-content:space-between;margin:14px 0;}
+.live-bait-price span {display:block;font-size:11px;color:var(--muted);margin-bottom:3px;}
+.live-bait-price strong {display:block;font-family:Georgia,serif;font-size:28px;font-weight:400;color:var(--gold);font-variant-numeric:tabular-nums;}
+.live-bait-price b {font-size:13px;font-weight:500;color:var(--text);font-variant-numeric:tabular-nums;}
+.live-bait-quote-note,.live-bait-feedback {font-size:12px;line-height:1.75;color:var(--muted);margin:10px 0;}
+.live-bait-feedback {padding:10px 12px;border-left:2px solid var(--copper);background:#df98760a;color:#e9b99e;}
+.live-bait-supplies {font-size:11px;color:var(--muted);margin:14px 0;}
+.live-bait-supplies summary {cursor:pointer;padding:5px 0;color:var(--lime);}
+.live-bait-supplies ul {margin:9px 0;padding:0;list-style:none;}
+.live-bait-supplies li {display:flex;justify-content:space-between;align-items:center;gap:14px;padding:7px 0;border-bottom:1px solid var(--border);}
+.live-bait-supplies li span {min-width:0;overflow-wrap:anywhere;}
+.live-bait-supplies li strong {font-weight:500;white-space:nowrap;color:var(--text);}
+.live-bait-apply {display:block;width:100%;min-height:47px;margin-top:18px;padding:12px;white-space:normal;}
+@media(max-width:480px){.trip-bait-rod{padding:14px 12px}.trip-bait-fields{grid-template-columns:minmax(0,1fr)}.trip-bait-primary{grid-column:auto}.trip-bait-field select{font-size:13px;min-height:46px}.live-bait-control{gap:10px}.live-bait-open{min-height:44px}.live-bait-editor .trip-bait-fields{gap:13px}}

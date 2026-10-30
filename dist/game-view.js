@@ -1,23 +1,34 @@
 import {GEAR,STYLES,WATERS} from './data.js';
 import {landscapeFor} from './atelier-assets.js';
 import {fishingForeground} from './fishing-scene.js';
+import {renderLiveBait} from './trip-bait-ui.js';
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const get=(items,id)=>items.find(item=>item.id===id);
 const num=(n,d=0)=>new Intl.NumberFormat('nl-NL',{maximumFractionDigits:d}).format(n||0);
 const rodNumber=(rod,index)=>Number.isInteger(rod?.slot)?rod.slot+1:index+1;
 export function indicatorName(r){return get(GEAR,r.indicator)?.name||(r.style==='karper'?'Vrijloopspoel':r.style==='dobber'?'Klassieke dobber':r.style==='feeder'?'Quivertop':'Molenratel');}
 
+function sessionTimer(seconds){
+ const total=Math.max(0,Math.ceil(Number(seconds)||0)),hours=Math.floor(total/3600),minutes=Math.floor(total%3600/60),rest=String(total%60).padStart(2,'0');
+ return hours?`${hours}:${String(minutes).padStart(2,'0')}:${rest}`:`${minutes}:${rest}`;
+}
+function sessionHud(game){
+ const session=game.state.session;if(!session)return '';
+ const english=game.state.settings.language!=='nl',count=session.loadout.rods.length,progress=session.duration>0?Math.max(0,Math.min(100,(1-session.remaining/session.duration)*100)):0;
+ return `<section class="scene-session-hud" data-no-translate aria-label="${english?'Active fishing session':'Actieve vissessie'}"><div class="scene-session-identity"><i aria-hidden="true"></i><div><strong>${english?'Session active':'Sessie actief'}</strong><span>${count} ${english?(count===1?'rod in the water':'rods in the water'):(count===1?'hengel in het water':'hengels in het water')}</span></div></div><div class="scene-session-time"><span>${english?'Time remaining':'Resterende tijd'}</span><b role="timer" aria-live="off" data-live="remaining">${sessionTimer(session.remaining)}</b></div><button type="button" class="scene-session-stop" data-action="stop-session"><i aria-hidden="true"></i>${english?'Stop session':'Sessie stoppen'}</button><div class="scene-session-progress" aria-hidden="true"><i data-live-width="sessionProgress" style="width:${progress}%"></i></div></section>`;
+}
+
 function rodControl(game,rod,index){
  const session=game.state.session,number=rodNumber(rod,index),phase=session?.rods[index]?.phase||'waiting';
- return `<article class="scene-rod-control" data-live-rod="${index}" data-rod-slot="${number-1}" data-phase="${phase}"><div class="scene-line-label"><span>${String(number).padStart(2,'0')}</span><div><strong data-scene-equipment>${esc(get(GEAR,rod.rod)?.name)}</strong><small data-scene-indicator>${esc(get(STYLES,rod.style)?.name)} · ${esc(indicatorName(rod))}</small></div><kbd>${number}</kbd></div><div class="scene-bite-status"><i></i><strong data-signal-text="${index}">WACHT OP EEN BEET</strong><span data-signal-time="${index}"></span></div><div class="scene-bite-meter"><i data-bite-progress="${index}"></i></div><button class="scene-strike-button" data-strike="${index}" disabled aria-label="Aanslaan op hengel ${number}"><span data-strike-label="${index}">${session?'Wachten op een beet':'Start eerst je sessie'}</span><span aria-hidden="true">↗</span></button><p data-outcome="${index}">${session?'Je assistent vist mee. Jij houdt de beet in de gaten.':'Plan rechts een sessie om je hengel in te leggen.'}</p></article>`;
+ return `<article class="scene-rod-control" data-live-rod="${index}" data-rod-slot="${number-1}" data-phase="${phase}"><div class="scene-line-label"><span>${String(number).padStart(2,'0')}</span><div><strong data-scene-equipment>${esc(get(GEAR,rod.rod)?.name)}</strong><small data-scene-indicator>${esc(get(STYLES,rod.style)?.name)} · ${esc(indicatorName(rod))}</small></div><kbd>${number}</kbd></div><div class="scene-bite-status"><i></i><strong data-signal-text="${index}">WACHT OP EEN BEET</strong><span data-signal-time="${index}"></span></div><div class="scene-bite-meter"><i data-bite-progress="${index}"></i></div><button class="scene-strike-button" data-strike="${index}" disabled aria-label="Aanslaan op hengel ${number}"><span data-strike-label="${index}">${session?'Wachten op een beet':'Start eerst je sessie'}</span><span aria-hidden="true">↗</span></button><p data-outcome="${index}">${session?'Je assistent vist mee. Jij houdt de beet in de gaten.':'Plan rechts een sessie om je hengel in te leggen.'}</p>${session?renderLiveBait(game,rod,index):''}</article>`;
 }
 
 export function fishingView(game,activeLine=0){
  const s=game.state,session=s.session,w=session?get(WATERS,session.water):game.water,loadout=session?.loadout||game.loadout,summary=session||s.lastSession;
  const landscape=landscapeFor(w);
- return `<section class="panel game-view" id="fishing-game" aria-label="Interactieve visstek"><div class="scene game-scene" data-phase="waiting"><img class="atelier-scene-background" src="${landscape.src}" alt="" style="object-position:${landscape.position}" decoding="async"><svg class="fishing-foreground-svg game-illustration" id="scene-foreground" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Al je hengels tegelijk aan de waterkant">${fishingForeground(loadout.rods)}</svg><div class="scene-vignette" aria-hidden="true"></div>
- <div class="game-scene-title"><span class="eyebrow">${esc(w.country.toUpperCase())} <span>·</span> ${esc(w.tag)}</span><h2>${esc(w.name)}</h2><p>${esc(w.region)}</p></div>
- <div class="scene-top-tools"><button class="scene-sound" data-action="toggle-audio"><span class="sound-status">Geluid inschakelen</span></button><span class="scene-weather">18° <i>·</i> <span data-live="sceneTime">07:24</span></span></div>
+ return `<section class="panel game-view" id="fishing-game" aria-label="Interactieve visstek"><div class="scene game-scene${session?' is-session-active':''}" data-phase="waiting"><img class="atelier-scene-background" src="${landscape.src}" alt="" style="object-position:${landscape.position}" decoding="async"><svg class="fishing-foreground-svg game-illustration" id="scene-foreground" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Al je hengels tegelijk aan de waterkant">${fishingForeground(loadout.rods)}</svg><div class="scene-vignette" aria-hidden="true"></div>
+ <div class="scene-top-content">${sessionHud(game)}<header class="scene-header"><div class="game-scene-title"><span class="eyebrow">${esc(w.country.toUpperCase())} <span>·</span> ${esc(w.tag)}</span><h2>${esc(w.name)}</h2><p>${esc(w.region)}</p></div>
+ <div class="scene-top-tools"><button class="scene-sound" data-action="toggle-audio"><span class="sound-status">Geluid inschakelen</span></button><span class="scene-weather">18° <i>·</i> <span data-live="sceneTime">07:24</span></span></div></header></div>
  <div class="scene-session-badge"><i class="dot"></i>${game.awaitingSettlement?'SESSIE AFGELOPEN · ROND JE VANGSTEN AF':session?loadout.rods.length+' LIJN'+(loadout.rods.length>1?'EN':'')+' IN HET WATER':'KLAAR VOOR EEN NIEUWE SESSIE'}</div>
  <button class="scene-tend" data-action="tend"><span>${session?'Stek verzorgen':'Stek opruimen'}</span><b data-live="focus">${Math.floor(s.focus)}</b><small>${session?'Volgende worp eerder':'+ € 0,10 voor de visclub'}</small></button>
  <div class="scene-bite-announcement sr-only" id="scene-bite-announcement" role="status" aria-live="polite"></div></div>
